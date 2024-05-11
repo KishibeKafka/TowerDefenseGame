@@ -1,6 +1,5 @@
 #include "actor.h"
 #include "Vector2D.h"
-#include "component.h"
 #include "world.h"
 #include <stack>
 

@@ -1,6 +1,6 @@
 #include "scene_component.h"
 #include "Vector2D.h"
-#include "component.h"
+#include "actor.h"
 
 Vector2D SceneComponent::getWorldPosition() const
 {

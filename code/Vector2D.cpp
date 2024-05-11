@@ -52,7 +52,7 @@ bool Vector2D::operator==(const Vector2D &another)
     return x == another.x && y == another.y;
 }
 
-std::ostream &operator<<(std::ostream &os, Vector2D &v)
+std::ostream &operator<<(std::ostream &os, const Vector2D &v)
 {
     os << '(' << v.x << ',' << v.y << ')';
     return os;

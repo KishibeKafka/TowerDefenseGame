@@ -1,6 +1,7 @@
 #pragma once
-#include "actor.h"
 #include "base.h"
+
+class Actor;
 
 class Component : public Base
 {

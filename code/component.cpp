@@ -1,4 +1,5 @@
 #include "component.h"
+#include "actor.h"
 
 void Component::Destruct()
 {

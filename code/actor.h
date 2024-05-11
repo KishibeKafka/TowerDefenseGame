@@ -8,14 +8,13 @@
 class Actor : public Base
 {
     // actor关系
+public:
     std::unordered_set< Actor * > children;
     Actor *parent = nullptr;
     // 组件
     std::unordered_set< Component * > components;
     std::unordered_set< Component * >::iterator components_iter;
-protected:
     SceneComponent *const root = new SceneComponent;
-public:
     Actor()
     {
         root->setOwner(this);

@@ -24,5 +24,5 @@ public:
     Vector2D &operator=(const Vector2D &another);
     Vector2D &operator+=(const Vector2D &another);
     bool operator==(const Vector2D &another);
-    friend std::ostream &operator<<(std::ostream &os, Vector2D &v);
+    friend std::ostream &operator<<(std::ostream &os, const Vector2D &v);
 };
