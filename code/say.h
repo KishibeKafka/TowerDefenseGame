@@ -1,6 +1,6 @@
 #pragma once
-#include "actor.h"
-#include "component.h"
+#include "Engine/actor.h"
+#include "Engine/component.h"
 #include <iostream>
 
 class Say : public Component

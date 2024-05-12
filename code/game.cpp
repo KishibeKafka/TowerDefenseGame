@@ -1,15 +1,10 @@
-#include "Vector2D.h"
-#include "actor.h"
+#include "Engine/Vector2D.h"
+#include "Engine/actor.h"
+#include "Engine/timer.h"
+#include "Engine/world.h"
 #include "enemy.h"
 #include "say.h"
-#include "world.h"
-#include <cassert>
-#include <chrono>
-#include <iostream>
-#include <mutex>
 #include <thread>
-
-std::mutex m;
 
 class Engine
 {
@@ -38,76 +33,71 @@ void Engine::Init()
     enemy->constructComponent< Say >();
     main_world.GameActors_to_add.push_back(enemy);
     // assert(!enemy->components.empty());
-    std::cout << "finished init.\n";
+    main_world.timer.start_timer();
 }
 
 void render()
 {
-    while (true)
-    {
-        std::lock_guard< std::mutex > mutex(m);
-        main_world.Render();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+    main_world.Render();
 }
 
 void update()
 {
-    while (true)
-    {
-        std::lock_guard< std::mutex > mutex(m);
-        main_world.Update();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+    main_world.Update();
 }
 
 void input()
 {
-    while (true)
-    {
-        std::lock_guard< std::mutex > mutex(m);
-        main_world.Input();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+    main_world.Input();
 }
 
 void add()
 {
-    while (true)
+    if (!main_world.GameActors_to_add.empty())
     {
-        std::lock_guard< std::mutex > mutex(m);
-        if (!main_world.GameActors_to_add.empty())
-        {
-            for (auto &pActor : main_world.GameActors_to_add)
-                main_world.GameActors.insert(pActor);
-        }
-        main_world.GameActors_to_add.clear();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        for (auto &pActor : main_world.GameActors_to_add)
+            main_world.GameActors.insert(pActor);
     }
+    main_world.GameActors_to_add.clear();
 }
 
 void trash()
 {
-    while (true)
+    if (!main_world.GameActors_to_delete.empty())
     {
-        std::lock_guard< std::mutex > mutex(m);
-        if (!main_world.GameActors_to_delete.empty())
-        {
-            for (auto &pActor : main_world.GameActors_to_delete)
-                pActor->~Actor();
-        }
-        main_world.GameActors_to_delete.clear();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        for (auto &pActor : main_world.GameActors_to_delete)
+            pActor->~Actor();
     }
+    main_world.GameActors_to_delete.clear();
 }
 
 void Engine::Update()
 {
-    std::thread ad(add);
-    std::thread rend(render);
-    std::thread upd(update);
-    std::thread inp(input);
-    std::thread tra(trash);
+    std::thread ad(
+        [](void) -> void
+        {
+            main_world.timer.fixedExecute(add);
+        });
+    std::thread rend(
+        [](void) -> void
+        {
+            main_world.timer.fixedExecute(render);
+        });
+    std::thread upd(
+        [](void) -> void
+        {
+            main_world.timer.fixedExecute(update);
+        });
+    std::thread inp(
+        [](void) -> void
+        {
+            main_world.timer.fixedExecute(input);
+        });
+    std::thread tra(
+        [](void) -> void
+        {
+            main_world.timer.fixedExecute(trash);
+        });
     ad.join();
     rend.join();
     upd.join();

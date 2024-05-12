@@ -1,12 +1,14 @@
 #pragma once
 #include "Vector2D.h"
 #include "actor.h"
+#include "timer.h"
 #include <unordered_set>
 #include <vector>
 
 class World final
 {
 public:
+    Timer timer;
     friend class Engine;
     std::unordered_set< Actor * > GameActors;
     std::vector< Actor * > GameActors_to_add;
