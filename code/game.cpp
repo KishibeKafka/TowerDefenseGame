@@ -1,9 +1,11 @@
 #include "Vector2D.h"
-#include "component.h"
+#include "actor.h"
 #include "enemy.h"
 #include "say.h"
 #include "world.h"
+#include <cassert>
 #include <chrono>
+#include <iostream>
 #include <mutex>
 #include <thread>
 
@@ -14,23 +16,29 @@ class Engine
 public:
     static Enemy *enemy;
 
-    static void init();
-    static void update();
-    static void end();
+    static void Init();
+    static void Update();
+    static void End();
 };
+
+Enemy *Engine::enemy;
 
 int main()
 {
-    Engine::init();
-    Engine::update();
-    Engine::end();
+    Engine::Init();
+    Engine::Update();
+    Engine::End();
     return 0;
 }
 
-void Engine::init()
+void Engine::Init()
 {
     enemy = GameStatics::createActor< Enemy >(Vector2D(1, 1));
+    // assert(enemy != nullptr);
     enemy->constructComponent< Say >();
+    main_world.GameActors_to_add.push_back(enemy);
+    // assert(!enemy->components.empty());
+    std::cout << "finished init.\n";
 }
 
 void render()
@@ -93,7 +101,7 @@ void trash()
     }
 }
 
-void Engine::update()
+void Engine::Update()
 {
     std::thread ad(add);
     std::thread rend(render);
@@ -107,7 +115,7 @@ void Engine::update()
     tra.join();
 }
 
-void Engine::end()
+void Engine::End()
 {
     for (auto pActor : main_world.GameActors)
         pActor->Destroy();
@@ -115,7 +123,7 @@ void Engine::end()
     if (!main_world.GameActors_to_delete.empty())
     {
         for (auto &pActor : main_world.GameActors_to_delete)
-            pActor->~Actor();
+            delete pActor;  // ~Actor
     }
     main_world.GameActors_to_delete.clear();
 }

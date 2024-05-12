@@ -3,13 +3,9 @@
 
 class Enemy : public Actor
 {
+private:
+    double velocity_x;
 public:
-    void Update()
-    {
-        components_iter = components.begin();
-        for (; components_iter != components.end(); components_iter++)
-        {
-            (*components_iter)->Update();
-        }
-    }
+    Enemy();
+    void Update();
 };

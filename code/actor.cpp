@@ -3,28 +3,28 @@
 #include "world.h"
 #include <stack>
 
-template < typename T > T *Actor::constructComponent()
-{
-    T *pCom = new T;
-    if (pCom && static_cast< Component * >(pCom))
-    {
-        pCom->setOwner(this);
-        registerComponent(pCom);
-        return pCom;
-    }
-    return nullptr;
-}
+// template < typename T > T *Actor::constructComponent()
+// {
+//     T *pCom = new T;
+//     if (pCom && static_cast< Component * >(pCom))
+//     {
+//         pCom->setOwner(this);
+//         registerComponent(pCom);
+//         return pCom;
+//     }
+//     return nullptr;
+// }
 
-template < typename T > T *Actor::getComponentByClass()
-{
-    for (auto &com : components)
-    {
-        T *pCom = dynamic_cast< T * >(com);
-        if (pCom)
-            return pCom;
-    }
-    return nullptr;
-}
+// template < typename T > T *Actor::getComponentByClass()
+// {
+//     for (auto &com : components)
+//     {
+//         T *pCom = dynamic_cast< T * >(com);
+//         if (pCom)
+//             return pCom;
+//     }
+//     return nullptr;
+// }
 
 Vector2D Actor::getWorldPosition() const
 {

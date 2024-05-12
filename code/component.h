@@ -8,6 +8,7 @@ class Component : public Base
 protected:
     Actor *pOwner = nullptr;
 public:
+    virtual ~Component() {}
     virtual void Update() override;
     void setOwner(Actor *owner)
     {

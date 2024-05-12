@@ -11,6 +11,7 @@ class SceneComponent : public Component
     std::unordered_set< SceneComponent * > children;  // 子场景
     SceneComponent *parent = nullptr;                 // 父场景
 public:
+    virtual ~SceneComponent() {}
     virtual void Update() override;
     virtual void Destruct() override;
     virtual void process_Destruct();

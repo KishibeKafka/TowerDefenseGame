@@ -1,4 +1,5 @@
 #include "world.h"
+World main_world;
 
 void World::Render()
 {

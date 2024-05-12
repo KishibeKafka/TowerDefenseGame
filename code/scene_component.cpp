@@ -77,3 +77,8 @@ void SceneComponent::Destruct()
         parent->children.erase(this);
     process_Destruct();
 }
+
+void SceneComponent::Update()
+{
+    ;
+}

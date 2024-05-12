@@ -22,7 +22,9 @@ public:
     virtual ~Actor()
     {
         for (auto &compo : components)
-            delete compo;
+        {
+            delete compo;  // ~Component
+        }
         delete root;
     }
 
@@ -47,9 +49,28 @@ public:
         components_iter = components.erase(components.find(pCom));
     }
 
-    template < typename T > T *constructComponent();
+    template < typename T > T *constructComponent()
+    {
+        T *pCom = new T;
+        if (pCom && static_cast< Component * >(pCom))
+        {
+            pCom->setOwner(this);
+            registerComponent(pCom);
+            return pCom;
+        }
+        return nullptr;
+    }
 
-    template < typename T > T *getComponentByClass();
+    template < typename T > T *getComponentByClass()
+    {
+        for (auto &com : components)
+        {
+            T *pCom = dynamic_cast< T * >(com);
+            if (pCom)
+                return pCom;
+        }
+        return nullptr;
+    }
 
     // 删除对象 queue_free?
     void Destroy();
