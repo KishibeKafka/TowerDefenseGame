@@ -1,10 +1,9 @@
 #pragma once
 #include "Engine/actor.h"
+#include "enemy_property.h"
 
 class Enemy : public Actor
 {
-private:
-    double velocity_x;
 public:
     Enemy();
     void Update();
