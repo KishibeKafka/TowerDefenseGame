@@ -17,7 +17,8 @@ public:
     }
     // 将一个坐标绕原点旋转一定角度得到新坐标
     static Vector2D Rotate(double angle, const Vector2D &another);
-
+    static double getAngle(const Vector2D &a,
+                           const Vector2D &b);  // 得到向量ab的角度
     Vector2D operator+(const Vector2D &another);
     Vector2D operator*(const Vector2D &another);
     Vector2D operator-();

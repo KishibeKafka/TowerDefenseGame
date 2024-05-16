@@ -3,9 +3,11 @@
 #include "Engine/timer.h"
 #include "Engine/world.h"
 #include "enemy.h"
+#include "enemy_move.h"
+#include "property.h"
 #include "say.h"
+#include "tower.h"
 #include <thread>
-
 class Engine
 {
 public:
@@ -16,7 +18,7 @@ public:
     static void End();
 };
 
-Enemy *Engine::enemy;
+extern World main_world;
 
 int main()
 {
@@ -28,11 +30,20 @@ int main()
 
 void Engine::Init()
 {
-    enemy = GameStatics::createActor< Enemy >(Vector2D(1, 1));
-    // assert(enemy != nullptr);
-    enemy->constructComponent< Say >();
-    main_world.GameActors_to_add.push_back(enemy);
-    // assert(!enemy->components.empty());
+    // enemy = GameStatics::createActor< Enemy >(Vector2D(0, 0));
+    // // assert(enemy != nullptr);
+    // enemy->constructComponent< Say >();
+    // EnemyMove *em = enemy->constructComponent< EnemyMove >();
+    // em->init();
+    // Property *ep = enemy->getComponentByClass< Property >();
+    // ep->setCurrentVelocity(ep->getVelocity());
+
+    // ep->addRoutePoint(Vector2D(30 * PPU, 0));
+    // ep->addRoutePoint(Vector2D(30 * PPU, 40 * PPU));
+    // ep->addRoutePoint(Vector2D(-10 * PPU, 40 * PPU));
+    // main_world.GameActors_to_add.push_back(enemy);
+    Tower *tower = GameStatics::createActor< Tower >(Vector2D(1, 1));
+    tower->constructComponent< Say >();
     main_world.timer.start_timer();
 }
 
@@ -73,6 +84,7 @@ void trash()
 
 void Engine::Update()
 {
+    std::cout << "updating\n";
     std::thread ad(
         [](void) -> void
         {

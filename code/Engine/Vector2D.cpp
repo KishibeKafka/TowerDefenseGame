@@ -1,4 +1,5 @@
 #include "Vector2D.h"
+#include <cmath>
 #include <iostream>
 
 Vector2D Vector2D::Rotate(double angle, const Vector2D &another)
@@ -8,6 +9,16 @@ Vector2D Vector2D::Rotate(double angle, const Vector2D &another)
     double dcos = cos(radian);
     return Vector2D(another.x * dcos - another.y * dsin,
                     another.x * dsin + another.y * dcos);
+}
+
+double Vector2D::getAngle(const Vector2D &a, const Vector2D &b)
+{
+    Vector2D delta(b.x - a.x, b.y - a.y);
+    double angle = std::atan2(delta.y, delta.x);
+    angle = angle * 180 / PI;
+    if (angle < 0)
+        angle += 360;
+    return angle;
 }
 
 Vector2D Vector2D::operator+(const Vector2D &another)
@@ -60,14 +71,13 @@ std::ostream &operator<<(std::ostream &os, const Vector2D &v)
 
 void test()
 {
-    Vector2D A(3, 4);
     Vector2D O;
-    Vector2D B(-1, -2);
-    std::cout << Vector2D::Distance(A, O) << '\n';
-    Vector2D C = Vector2D::Rotate(90, A);
-    std::cout << C << '\n';
-    Vector2D D = B + C;
-    std::cout << D << '\n';
-    D = -D;
-    std::cout << D << '\n';
+    Vector2D A(1, 1);
+    Vector2D B(-1, 1);
+    Vector2D C(-1, -1);
+    Vector2D D(1, -1);
+    std::cout << "OA :" << Vector2D::getAngle(O, A) << '\n';
+    std::cout << "OB :" << Vector2D::getAngle(O, B) << '\n';
+    std::cout << "OC :" << Vector2D::getAngle(O, C) << '\n';
+    std::cout << "OD :" << Vector2D::getAngle(O, D) << '\n';
 }

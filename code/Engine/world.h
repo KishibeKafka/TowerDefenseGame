@@ -18,7 +18,6 @@ public:
     void Render();
     void Input();
 };
-
 extern World main_world;
 
 class GameStatics final

@@ -2,10 +2,11 @@
 #include "Engine/Vector2D.h"
 #include "Engine/actor.h"
 #include "Engine/component.h"
+#include <queue>
 #include <utility>
 #include <vector>
 
-#define PPU 32.0;  // Pixel per Unit
+#define PPU 32.0  // Pixel per Unit
 
 enum Direction
 {
@@ -25,27 +26,41 @@ struct AttackRange
 class Property : public Component
 {
 private:
+    unsigned id;
+    bool is_enemy;
     double max_HP;
     double cur_HP;
     double max_DMG;
     double cur_DMG;
     double attack_interval;
 
+    double velocity;
+    double cur_v;
+
+    int max_block_number;  // 最大可阻挡敌人数
+    int current_block_number;
+
+    int cost;  // 建塔花费
+
     std::vector< AttackRange > attackRange;           // 攻击范围
     std::vector< AttackRange >::iterator range_iter;  // 迭代器
-    Direction direction;                              // 朝向
+    std::queue< Vector2D > route;  // 路径节点，相对于地图
+    Direction direction;           // 朝向
 public:
     Property()
-        : max_HP(100), cur_HP(100), max_DMG(10), cur_DMG(10),
-          attack_interval(1), direction(East)
+        : id(0), is_enemy(true), max_HP(100), cur_HP(100), max_DMG(10),
+          cur_DMG(10), attack_interval(1), velocity(0.5 * PPU), cur_v(0),
+          max_block_number(1), current_block_number(0), cost(0), direction(East)
     {
         // set attackRange
+        // set Route
+        // set Collider
     }
-    Property(double mH, double mD, double ai, Direction dir = East)
-        : max_HP(mH), cur_HP(max_HP), max_DMG(mD), cur_DMG(max_DMG),
-          attack_interval(ai), direction(dir)
-    {
-    }
+    // Property(double mH, double mD, double ai, Direction dir = East)
+    //     : max_HP(mH), cur_HP(max_HP), max_DMG(mD), cur_DMG(max_DMG),
+    //       attack_interval(ai), direction(dir)
+    // {
+    // }
     ~Property()
     {
         attackRange.clear();
@@ -57,6 +72,22 @@ public:
         delete this;
     }
 
+    void setID(unsigned i)
+    {
+        id = i;
+    }
+    unsigned getID()
+    {
+        return id;
+    }
+    void setType(bool is_e)
+    {
+        is_enemy = is_e;
+    }
+    bool getType()
+    {
+        return is_enemy;
+    }
     void setMaxHP(double val)
     {
         max_HP = val;
@@ -111,7 +142,56 @@ public:
     }
     std::vector< AttackRange >::iterator getAttackRange()
     {
-        range_iter = attackRange.begin();
-        return range_iter;
+        return attackRange.begin();
+    }
+    void addRoutePoint(Vector2D p)
+    {
+        route.push(p);
+    }
+    std::queue< Vector2D > &getRoute()
+    {
+        return route;
+    }
+
+    void setMaxBlock(int mb)
+    {
+        max_block_number = mb;
+    }
+    int getMaxBlock()
+    {
+        return max_block_number;
+    }
+    void setCurrentBlock(int cb)
+    {
+        current_block_number = cb;
+    }
+    int getCurrentBlock()
+    {
+        return current_block_number;
+    }
+
+    void setVelocity(double v)
+    {
+        velocity = v;
+    }
+    double getVelocity()
+    {
+        return velocity;
+    }
+    void setCurrentVelocity(double v)
+    {
+        cur_v = v;
+    }
+    double getCurrentVelocity()
+    {
+        return cur_v;
+    }
+    void setCost(int c)
+    {
+        cost = c;
+    }
+    int getCost()
+    {
+        return cost;
     }
 };

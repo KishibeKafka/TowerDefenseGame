@@ -1,9 +1,11 @@
 #pragma once
 #include "Engine/actor.h"
 #include "Engine/component.h"
-#include "enemy_property.h"
+#include "Engine/timer.h"
+#include "Engine/world.h"
+#include "property.h"
+#include <chrono>
 #include <iostream>
-
 class Say : public Component
 {
 public:
@@ -12,12 +14,14 @@ public:
     {
         if (pOwner)
         {
-            std::cout << "Enemy at " << (pOwner->root)->getLocalPosition()
-                      << '\n';
-            std::cout << "Enemy facing angle "
-                      << (pOwner->getComponentByClass< EnemyProperty >()
-                              ->getDirection())
-                      << '\n';
+            std::cout << "time at :"
+                      << main_world.timer.getCurrrentTime().count() << '\n';
+            std::cout << pOwner->getName() << " at "
+                      << pOwner->getWorldPosition() << '\n';
+            std::cout
+                << "Enemy facing angle "
+                << (pOwner->getComponentByClass< Property >()->getDirection())
+                << '\n';
         }
     }
     void Destruct()
