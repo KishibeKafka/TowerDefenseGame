@@ -30,10 +30,6 @@ public:
     {
         property->setCurrentVelocity(0);
     }
-    bool on_move()  // 正在移动
-    {
-        return property->getCurrentVelocity() != 0;
-    }
     void turn_to(Direction dir)  // 转向
     {
         property->setDirection(dir);

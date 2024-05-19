@@ -18,7 +18,7 @@ void EnemyMove::move_to(Vector2D next)
 
 void EnemyMove::Update()
 {
-    if (on_move())
+    if (property->getStatus() == Moving)
     {
         if (step_counts == 0 && !property->getRoute().empty())
         {

@@ -4,6 +4,7 @@
 #include "Engine/component.h"
 #include "Engine/world.h"
 #include "property.h"
+#include <iostream>
 #include <vector>
 
 class Collider : public Component  // 这边就只用圆形的
@@ -57,7 +58,7 @@ public:
         }
         // 恢复速度
         if (collidingActors.empty())
-            property->setCurrentVelocity(property->getVelocity());
+            property->setStatus(Moving);
 
         for (auto iter = detectedActors.begin(); iter != detectedActors.end();)
         {
@@ -93,8 +94,10 @@ public:
                                        other->pOwner->getWorldPosition()) <=
                     property->getRadius() + other->property->getRadius())
                 {
+                    std::cout << pOwner->getName() << " Collding "
+                              << actor->getName() << '\n';
                     collidingActors.push_back(actor);
-                    property->setVelocity(0);
+                    property->setStatus(Attacking);
                 }
             }
         }
@@ -150,5 +153,13 @@ public:
     int getDetectLayer()
     {
         return detectlayer;
+    }
+    std::vector< Actor * > &getCollidingActors()
+    {
+        return collidingActors;
+    }
+    std::vector< Actor * > &getDetectedActors()
+    {
+        return detectedActors;
     }
 };

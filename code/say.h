@@ -21,7 +21,7 @@ public:
             std::cout
                 << pOwner->getName() << " facing angle "
                 << (pOwner->getComponentByClass< Property >()->getDirection())
-                << '\n';
+                << "\n\n";
         }
     }
     void Destruct()

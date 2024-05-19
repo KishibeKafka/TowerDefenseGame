@@ -23,6 +23,14 @@ struct AttackRange
     Vector2D northeast;
 };
 
+enum Status
+{
+    Moving = 0,
+    Staying = 1,
+    Attacking = 2,
+    Dead = 3
+};
+
 class Property : public Component
 {
 private:
@@ -32,7 +40,7 @@ private:
     double cur_HP;
     double max_DMG;
     double cur_DMG;
-    double attack_interval;
+    double attack_interval;  // 单位: s
 
     double velocity;
     double cur_v;
@@ -40,6 +48,8 @@ private:
     int cost;  // 建塔花费
 
     double collider_radius;  // 碰撞体积
+
+    Status status;
 
     std::vector< AttackRange > attackRange;           // 攻击范围
     std::vector< AttackRange >::iterator range_iter;  // 迭代器
@@ -49,7 +59,7 @@ public:
     Property()
         : id(0), type(1), max_HP(100), cur_HP(100), max_DMG(10), cur_DMG(10),
           attack_interval(1), velocity(0.5 * PPU), cur_v(0), cost(0),
-          collider_radius(PPU / 2), direction(East)
+          collider_radius(PPU / 2), status(Moving), direction(East)
     {
         // set attackRange
         // set Route
@@ -64,7 +74,22 @@ public:
     {
         attackRange.clear();
     }
-    void Update() {}
+    void Update()
+    {
+        if (status == Moving)
+        {
+            setCurrentVelocity(getVelocity());
+        } else if (status == Staying)
+        {
+            setCurrentVelocity(0);
+        } else if (status == Attacking)
+        {
+            setCurrentVelocity(0);
+        } else if (status == Dead)
+        {
+            pOwner->Destroy();
+        }
+    }
     void Destruct()
     {
         pOwner->UnregisterComponent(this);
@@ -94,6 +119,10 @@ public:
     void setCurHP(double val)
     {
         cur_HP = val;
+    }
+    void addHP(double delta)
+    {
+        cur_HP += delta;
     }
     void setMaxDMG(double val)
     {
@@ -187,5 +216,14 @@ public:
     double getRadius()
     {
         return collider_radius;
+    }
+
+    void setStatus(Status s)
+    {
+        status = s;
+    }
+    Status getStatus()
+    {
+        return status;
     }
 };
