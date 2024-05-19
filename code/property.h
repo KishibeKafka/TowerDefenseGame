@@ -27,7 +27,7 @@ class Property : public Component
 {
 private:
     unsigned id;
-    bool is_enemy;
+    int type;  // 0 tower 1 enemy
     double max_HP;
     double cur_HP;
     double max_DMG;
@@ -37,10 +37,9 @@ private:
     double velocity;
     double cur_v;
 
-    int max_block_number;  // 最大可阻挡敌人数
-    int current_block_number;
-
     int cost;  // 建塔花费
+
+    double collider_radius;  // 碰撞体积
 
     std::vector< AttackRange > attackRange;           // 攻击范围
     std::vector< AttackRange >::iterator range_iter;  // 迭代器
@@ -48,9 +47,9 @@ private:
     Direction direction;           // 朝向
 public:
     Property()
-        : id(0), is_enemy(true), max_HP(100), cur_HP(100), max_DMG(10),
-          cur_DMG(10), attack_interval(1), velocity(0.5 * PPU), cur_v(0),
-          max_block_number(1), current_block_number(0), cost(0), direction(East)
+        : id(0), type(1), max_HP(100), cur_HP(100), max_DMG(10), cur_DMG(10),
+          attack_interval(1), velocity(0.5 * PPU), cur_v(0), cost(0),
+          collider_radius(PPU / 2), direction(East)
     {
         // set attackRange
         // set Route
@@ -80,13 +79,13 @@ public:
     {
         return id;
     }
-    void setType(bool is_e)
+    void setType(int t)
     {
-        is_enemy = is_e;
+        type = t;
     }
-    bool getType()
+    int getType()
     {
-        return is_enemy;
+        return type;
     }
     void setMaxHP(double val)
     {
@@ -140,7 +139,11 @@ public:
     {
         attackRange.push_back(new_range);
     }
-    std::vector< AttackRange >::iterator getAttackRange()
+    std::vector< AttackRange > &getAttackRange()
+    {
+        return attackRange;
+    }
+    std::vector< AttackRange >::iterator getRangeIter()
     {
         return attackRange.begin();
     }
@@ -151,23 +154,6 @@ public:
     std::queue< Vector2D > &getRoute()
     {
         return route;
-    }
-
-    void setMaxBlock(int mb)
-    {
-        max_block_number = mb;
-    }
-    int getMaxBlock()
-    {
-        return max_block_number;
-    }
-    void setCurrentBlock(int cb)
-    {
-        current_block_number = cb;
-    }
-    int getCurrentBlock()
-    {
-        return current_block_number;
     }
 
     void setVelocity(double v)
@@ -193,5 +179,13 @@ public:
     int getCost()
     {
         return cost;
+    }
+    void setRadius(double r)
+    {
+        collider_radius = r;
+    }
+    double getRadius()
+    {
+        return collider_radius;
     }
 };

@@ -3,6 +3,7 @@
 
 Enemy::Enemy()
 {
+    Base::setName("Enemy");
     constructComponent< Property >();
 }
 
@@ -11,12 +12,11 @@ void Enemy::Update()
     Actor::Update();
 }
 
-void Enemy::init(unsigned i, bool is_e, double mH, double mD, double aI,
-                 double v, int mbn)
+void Enemy::init(unsigned i, double mH, double mD, double aI, double v)
 {
     Property *property = getComponentByClass< Property >();
     property->setID(i);
-    property->setType(true);
+    property->setType(1);
     property->setMaxHP(mH);
     property->setCurHP(mH);
     property->setMaxDMG(mD);
@@ -24,6 +24,4 @@ void Enemy::init(unsigned i, bool is_e, double mH, double mD, double aI,
     property->setAttackInterval(aI);
     property->setVelocity(v);
     property->setCurrentVelocity(0);
-    property->setMaxBlock(mbn);
-    property->setCurrentBlock(mbn);
 }

@@ -2,11 +2,13 @@
 #include "Engine/actor.h"
 #include "Engine/timer.h"
 #include "Engine/world.h"
+#include "collider.h"
 #include "enemy.h"
 #include "enemy_move.h"
 #include "property.h"
 #include "say.h"
 #include "tower.h"
+#include <memory>
 #include <thread>
 class Engine
 {
@@ -42,8 +44,20 @@ void Engine::Init()
     // ep->addRoutePoint(Vector2D(30 * PPU, 40 * PPU));
     // ep->addRoutePoint(Vector2D(-10 * PPU, 40 * PPU));
     // main_world.GameActors_to_add.push_back(enemy);
-    Tower *tower = GameStatics::createActor< Tower >(Vector2D(1, 1));
+    Tower *tower = GameStatics::createActor< Tower >(Vector2D(0, 0));
+    tower->getComponentByClass< Property >()->setType(0);
     tower->constructComponent< Say >();
+    tower->constructComponent< Collider >()->init();
+
+    Enemy *enemy = GameStatics::createActor< Enemy >(Vector2D(10 * PPU, 0));
+    EnemyMove *em = enemy->constructComponent< EnemyMove >();
+    em->init();
+    Property *ep = enemy->getComponentByClass< Property >();
+    ep->addRoutePoint(Vector2D(-10 * PPU, 0));
+    ep->setCurrentVelocity(ep->getVelocity());
+    enemy->constructComponent< Say >();
+    enemy->constructComponent< Collider >()->init();
+
     main_world.timer.start_timer();
 }
 
@@ -77,7 +91,14 @@ void trash()
     if (!main_world.GameActors_to_delete.empty())
     {
         for (auto &pActor : main_world.GameActors_to_delete)
+        {
             pActor->~Actor();
+            for (auto &toremove : main_world.GameActors)
+            {
+                if (toremove == pActor)
+                    main_world.GameActors.erase(toremove);
+            }
+        }
     }
     main_world.GameActors_to_delete.clear();
 }

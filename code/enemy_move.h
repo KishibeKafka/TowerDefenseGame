@@ -8,6 +8,7 @@ class EnemyMove : public Component
 private:
     bool reached;
     bool finished;
+    int step_counts;
 public:
     Property *property;
     EnemyMove()
@@ -19,6 +20,7 @@ public:
         property = pOwner->constructComponent< Property >();
         reached = false;
         finished = false;
+        step_counts = 0;
     }
     void start_move()
     {

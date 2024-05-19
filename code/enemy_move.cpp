@@ -20,6 +20,10 @@ void EnemyMove::Update()
 {
     if (on_move())
     {
+        if (step_counts == 0 && !property->getRoute().empty())
+        {
+            move_to(property->getRoute().front());
+        }
         if (finished)
         {
             // 扣血
@@ -52,5 +56,7 @@ void EnemyMove::Update()
             if (property->getRoute().size() == 1)
                 finished = true;
         }
+
+        step_counts++;
     }
 }

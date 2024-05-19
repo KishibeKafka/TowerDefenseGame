@@ -19,7 +19,7 @@ public:
             std::cout << pOwner->getName() << " at "
                       << pOwner->getWorldPosition() << '\n';
             std::cout
-                << "Enemy facing angle "
+                << pOwner->getName() << " facing angle "
                 << (pOwner->getComponentByClass< Property >()->getDirection())
                 << '\n';
         }

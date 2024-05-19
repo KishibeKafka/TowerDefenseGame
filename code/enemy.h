@@ -7,6 +7,5 @@ class Enemy : public Actor
 public:
     Enemy();
     void Update();
-    void init(unsigned i, bool is_e, double mH, double mD, double aI, double v,
-              int mbn);
+    void init(unsigned i, double mH, double mD, double aI, double v);
 };

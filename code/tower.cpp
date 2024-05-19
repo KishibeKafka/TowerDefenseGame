@@ -12,12 +12,11 @@ void Tower::Update()
     Actor::Update();
 }
 
-void Tower::init(unsigned i, bool is_e, double mH, double mD, double aI,
-                 int mbn, int c)
+void Tower::init(unsigned i, double mH, double mD, double aI, int c)
 {
     Property *property = getComponentByClass< Property >();
     property->setID(i);
-    property->setType(false);
+    property->setType(0);
     property->setMaxHP(mH);
     property->setCurHP(mH);
     property->setMaxDMG(mD);
@@ -25,7 +24,5 @@ void Tower::init(unsigned i, bool is_e, double mH, double mD, double aI,
     property->setAttackInterval(aI);
     property->setVelocity(0);
     property->setCurrentVelocity(0);
-    property->setMaxBlock(mbn);
-    property->setCurrentBlock(mbn);
     property->setCost(c);
 }
