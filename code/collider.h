@@ -1,9 +1,9 @@
 #pragma once
-#include "Engine/Vector2D.h"
-#include "Engine/actor.h"
-#include "Engine/component.h"
-#include "Engine/world.h"
+#include "Vector2D.h"
+#include "actor.h"
+#include "component.h"
 #include "property.h"
+#include "world.h"
 #include <iostream>
 #include <vector>
 
@@ -58,7 +58,7 @@ public:
         }
         // 恢复速度
         if (collidingActors.empty())
-            property->setStatus(Moving);
+            property->setCurrentVelocity(property->getVelocity());
 
         for (auto iter = detectedActors.begin(); iter != detectedActors.end();)
         {
@@ -97,7 +97,7 @@ public:
                     std::cout << pOwner->getName() << " Collding "
                               << actor->getName() << '\n';
                     collidingActors.push_back(actor);
-                    property->setStatus(Attacking);
+                    property->setCurrentVelocity(0);
                 }
             }
         }

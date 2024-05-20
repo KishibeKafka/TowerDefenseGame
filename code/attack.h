@@ -1,9 +1,12 @@
 #pragma once
-#include "Engine/actor.h"
-#include "Engine/component.h"
-#include "Engine/timer.h"
+#include "Vector2D.h"
+#include "actor.h"
+#include "bullet.h"
 #include "collider.h"
+#include "component.h"
 #include "property.h"
+#include "timer.h"
+#include "world.h"
 #include <algorithm>
 
 class Attack : public Component
@@ -47,7 +50,6 @@ public:
 
     void close_attack()
     {
-        property->setStatus(Attacking);
         Actor *refugee = collider->getCollidingActors().at(0);
         for (auto &p_actor : collider->getCollidingActors())
         {
@@ -60,10 +62,30 @@ public:
                   << refugee->getName() << '\n';
         refugee_property->addHP(-property->getCurDMG());
         if (refugee_property->getCurHP() <= 0)
-            refugee_property->setStatus(Dead);
+            refugee->Destroy();
     }
     void distant_attack()
     {
-        ;
+        Actor *refugee = collider->getDetectedActors().at(0);
+        for (auto &p_actor : collider->getDetectedActors())
+        {
+            if (Vector2D::Distance(p_actor->getWorldPosition(),
+                                   p_actor->getComponentByClass< Property >()
+                                       ->getRoute()
+                                       .back()) <
+                Vector2D::Distance(refugee->getWorldPosition(),
+                                   refugee->getComponentByClass< Property >()
+                                       ->getRoute()
+                                       .back()))
+                refugee = p_actor;
+        }  // 先打距离家最近的
+        Property *refugee_property = refugee->getComponentByClass< Property >();
+        std::cout << pOwner->getName() << "distant attacked "
+                  << refugee->getName() << '\n';
+        refugee_property->addHP(-property->getCurDMG());
+        if (refugee_property->getCurHP() <= 0)
+            refugee->Destroy();
+        // GameStatics::createActor< Bullet >()->init(refugee,
+        //                                            property->getCurDMG());
     }
 };

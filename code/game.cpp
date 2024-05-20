@@ -1,14 +1,15 @@
-#include "Engine/Vector2D.h"
-#include "Engine/actor.h"
-#include "Engine/timer.h"
-#include "Engine/world.h"
+#include "Vector2D.h"
+#include "actor.h"
 #include "attack.h"
 #include "collider.h"
 #include "enemy.h"
 #include "enemy_move.h"
+#include "game_map.h"
 #include "property.h"
 #include "say.h"
+#include "timer.h"
 #include "tower.h"
+#include "world.h"
 #include <thread>
 class Engine
 {
@@ -32,18 +33,25 @@ int main()
 
 void Engine::Init()
 {
+    main_world.game_map = new GameMap(13, 5);
+
     Tower *tower = GameStatics::createActor< Tower >(Vector2D(0, 0));
     tower->getComponentByClass< Property >()->setType(0);
     tower->constructComponent< Say >();
     tower->constructComponent< Collider >()->init();
     tower->constructComponent< Attack >()->init();
+    tower->getComponentByClass< Property >()->addAttackRange(
+        {Vector2D(-PPU / 2, -PPU * 3 / 2),
+         Vector2D(19 * PPU / 2, PPU * 3 / 2)});
 
-    Enemy *enemy = GameStatics::createActor< Enemy >(Vector2D(10 * PPU, 0));
+    Enemy *enemy = GameStatics::createActor< Enemy >(Vector2D(6 * PPU, 0));
     EnemyMove *em = enemy->constructComponent< EnemyMove >();
     em->init();
     Property *ep = enemy->getComponentByClass< Property >();
     ep->addRoutePoint(Vector2D(-10 * PPU, 0));
     ep->setCurrentVelocity(ep->getVelocity());
+    ep->addAttackRange(
+        {Vector2D(-PPU / 2, -PPU / 2), Vector2D(PPU / 2, PPU / 2)});
     enemy->constructComponent< Say >();
     enemy->constructComponent< Collider >()->init();
     enemy->constructComponent< Attack >()->init();
@@ -139,4 +147,5 @@ void Engine::End()
             delete pActor;  // ~Actor
     }
     main_world.GameActors_to_delete.clear();
+    delete main_world.game_map;
 }

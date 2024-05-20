@@ -12,16 +12,10 @@ void Enemy::Update()
     Actor::Update();
 }
 
-void Enemy::init(unsigned i, double mH, double mD, double aI, double v)
+void Enemy::init(unsigned i)
 {
     Property *property = getComponentByClass< Property >();
     property->setID(i);
     property->setType(1);
-    property->setMaxHP(mH);
-    property->setCurHP(mH);
-    property->setMaxDMG(mD);
-    property->setCurDMG(mD);
-    property->setAttackInterval(aI);
-    property->setVelocity(v);
-    property->setCurrentVelocity(0);
+    // ...
 }

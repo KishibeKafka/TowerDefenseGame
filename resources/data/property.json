@@ -1,0 +1,23 @@
+{
+    "enemy": [
+        {
+            "id": 1,
+            "maxHP": 200,
+            "maxDMG": 20,
+            "attack_interval": 0.6,
+            "velocity": 0.3,
+            "radius": 0.5
+        }
+    ],
+    "tower": [
+        {
+            "id": 1,
+            "tower_type": 0,
+            "maxHP": 100,
+            "maxDMG": 20,
+            "attack_interval": 1.5,
+            "radius": 0.3,
+            "cost": 100
+        }
+    ]
+}

@@ -1,9 +1,9 @@
 #pragma once
-#include "Engine/actor.h"
-#include "Engine/component.h"
-#include "Engine/timer.h"
-#include "Engine/world.h"
+#include "actor.h"
+#include "component.h"
 #include "property.h"
+#include "timer.h"
+#include "world.h"
 #include <chrono>
 #include <iostream>
 class Say : public Component

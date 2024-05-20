@@ -1,5 +1,5 @@
 #include "enemy_move.h"
-#include "Engine/Vector2D.h"
+#include "Vector2D.h"
 #include "property.h"
 #include <iostream>
 void EnemyMove::move_to(Vector2D next)
@@ -18,7 +18,7 @@ void EnemyMove::move_to(Vector2D next)
 
 void EnemyMove::Update()
 {
-    if (property->getStatus() == Moving)
+    if (property->getCurrentVelocity() > 0)
     {
         if (step_counts == 0 && !property->getRoute().empty())
         {

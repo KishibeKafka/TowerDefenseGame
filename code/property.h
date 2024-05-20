@@ -1,12 +1,10 @@
 #pragma once
-#include "Engine/Vector2D.h"
-#include "Engine/actor.h"
-#include "Engine/component.h"
+#include "Vector2D.h"
+#include "actor.h"
+#include "component.h"
 #include <queue>
 #include <utility>
 #include <vector>
-
-#define PPU 32.0  // Pixel per Unit
 
 enum Direction
 {
@@ -22,20 +20,12 @@ struct AttackRange
     Vector2D southwest;
     Vector2D northeast;
 };
-
-enum Status
-{
-    Moving = 0,
-    Staying = 1,
-    Attacking = 2,
-    Dead = 3
-};
-
 class Property : public Component
 {
 private:
     unsigned id;
-    int type;  // 0 tower 1 enemy
+    int type;        // 0 tower 1 enemy
+    int tower_type;  // 0 远战 1 近战
     double max_HP;
     double cur_HP;
     double max_DMG;
@@ -49,17 +39,15 @@ private:
 
     double collider_radius;  // 碰撞体积
 
-    Status status;
-
     std::vector< AttackRange > attackRange;           // 攻击范围
     std::vector< AttackRange >::iterator range_iter;  // 迭代器
     std::queue< Vector2D > route;  // 路径节点，相对于地图
     Direction direction;           // 朝向
 public:
     Property()
-        : id(0), type(1), max_HP(100), cur_HP(100), max_DMG(10), cur_DMG(10),
-          attack_interval(1), velocity(0.5 * PPU), cur_v(0), cost(0),
-          collider_radius(PPU / 2), status(Moving), direction(East)
+        : id(0), type(1), tower_type(0), max_HP(100), cur_HP(100), max_DMG(20),
+          cur_DMG(20), attack_interval(3), velocity(0.5 * PPU), cur_v(0),
+          cost(0), collider_radius(PPU / 2), direction(East)
     {
         // set attackRange
         // set Route
@@ -74,22 +62,7 @@ public:
     {
         attackRange.clear();
     }
-    void Update()
-    {
-        if (status == Moving)
-        {
-            setCurrentVelocity(getVelocity());
-        } else if (status == Staying)
-        {
-            setCurrentVelocity(0);
-        } else if (status == Attacking)
-        {
-            setCurrentVelocity(0);
-        } else if (status == Dead)
-        {
-            pOwner->Destroy();
-        }
-    }
+    void Update() {}
     void Destruct()
     {
         pOwner->UnregisterComponent(this);
@@ -111,6 +84,15 @@ public:
     int getType()
     {
         return type;
+    }
+
+    void setTowerType(int t)
+    {
+        tower_type = t;
+    }
+    int getTowerType()
+    {
+        return tower_type;
     }
     void setMaxHP(double val)
     {
@@ -216,14 +198,5 @@ public:
     double getRadius()
     {
         return collider_radius;
-    }
-
-    void setStatus(Status s)
-    {
-        status = s;
-    }
-    Status getStatus()
-    {
-        return status;
     }
 };

@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine/Vector2D.h"
-#include "Engine/component.h"
+#include "Vector2D.h"
+#include "component.h"
 #include "property.h"
 
 class EnemyMove : public Component

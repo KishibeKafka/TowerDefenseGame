@@ -2,7 +2,8 @@
 #include <cmath>
 #include <ostream>
 
-#define PI 3.14159265358979323846
+#define PI  3.14159265358979323846
+#define PPU 32.0
 
 class Vector2D
 {
