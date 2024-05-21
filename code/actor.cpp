@@ -3,6 +3,8 @@
 #include "world.h"
 #include <stack>
 
+extern World main_world;
+
 // template < typename T > T *Actor::constructComponent()
 // {
 //     T *pCom = new T;

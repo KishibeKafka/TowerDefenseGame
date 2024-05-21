@@ -2,22 +2,26 @@
     "enemy": [
         {
             "id": 1,
+            "name": "normal zombie",
             "maxHP": 200,
             "maxDMG": 20,
             "attack_interval": 0.6,
             "velocity": 0.3,
-            "radius": 0.5
+            "radius": 0.5,
+            "attack_range" : [[[-0.5,-0.5],[0.5,0.5]]]
         }
     ],
     "tower": [
         {
             "id": 1,
-            "tower_type": 0,
+            "name": "laser tower",
+            "tower_type" : 0,
             "maxHP": 100,
             "maxDMG": 20,
             "attack_interval": 1.5,
             "radius": 0.3,
-            "cost": 100
+            "cost": 100,
+            "attack_range" : [[[-0.5, -1.5],[3.5, 1.5]]]
         }
     ]
 }

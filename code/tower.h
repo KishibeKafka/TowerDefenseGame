@@ -1,6 +1,5 @@
 #pragma once
 #include "actor.h"
-#include "property.h"
 
 class Tower : public Actor
 {

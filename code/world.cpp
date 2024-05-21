@@ -1,5 +1,6 @@
 #include "world.h"
 #include "enemy_generator.h"
+#include "tower_generator.h"
 
 World main_world;
 
@@ -17,5 +18,5 @@ void World::Update()
 
 void World::Input()
 {
-    ;
+    TowerGenerator::input();
 }

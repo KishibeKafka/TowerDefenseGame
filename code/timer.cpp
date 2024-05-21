@@ -1,6 +1,5 @@
 #include "timer.h"
 #include <chrono>
-#include <iostream>
 #include <mutex>
 std::mutex m;
 

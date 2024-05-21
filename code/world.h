@@ -5,21 +5,28 @@
 #include "timer.h"
 #include <unordered_set>
 #include <vector>
-
 class World final
 {
 public:
     Timer timer;
     GameMap *game_map;
-    friend class Engine;
+    int current_cost;
+    int enemy_number;
     std::unordered_set< Actor * > GameActors;
     std::vector< Actor * > GameActors_to_add;
     std::unordered_set< Actor * > GameActors_to_delete;
 
-    void Update();
+    friend class Engine;
+
+    World() : current_cost(0), enemy_number(0) {}
+
     void Render();
+
+    void Update();
+
     void Input();
 };
+
 extern World main_world;
 
 class GameStatics final

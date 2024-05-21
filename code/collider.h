@@ -7,6 +7,8 @@
 #include <iostream>
 #include <vector>
 
+extern World main_world;
+
 class Collider : public Component  // 这边就只用圆形的
 {
 private:
@@ -125,18 +127,26 @@ public:
                 while (it != property->getAttackRange().end())
                 {
                     Vector2D real_southwest(
-                        pOwner->getWorldPosition() + it->southwest +
+                        pOwner->getWorldPosition() +
+                        Vector2D::Rotate(property->getDirection(),
+                                         it->southwest) +
                         Vector2D(-other->property->getRadius(),
                                  -other->property->getRadius()));
                     Vector2D real_northeast(
-                        pOwner->getWorldPosition() + it->northeast +
+                        pOwner->getWorldPosition() +
+                        Vector2D::Rotate(property->getDirection(),
+                                         it->northeast) +
                         Vector2D(other->property->getRadius(),
                                  other->property->getRadius()));
 
-                    if (actor->getWorldPosition().x > real_southwest.x &&
-                        actor->getWorldPosition().x < real_northeast.x &&
-                        actor->getWorldPosition().y > real_southwest.y &&
-                        actor->getWorldPosition().y < real_northeast.y)
+                    if ((actor->getWorldPosition().x - real_southwest.x) *
+                                (actor->getWorldPosition().x -
+                                 real_northeast.x) <
+                            0 &&
+                        (actor->getWorldPosition().y - real_southwest.y) *
+                                (actor->getWorldPosition().y -
+                                 real_northeast.y) <
+                            0)
                     {
                         detectedActors.push_back(actor);
                     }

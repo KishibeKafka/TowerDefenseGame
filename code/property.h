@@ -3,6 +3,7 @@
 #include "actor.h"
 #include "component.h"
 #include <queue>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -24,6 +25,7 @@ class Property : public Component
 {
 private:
     unsigned id;
+    std::string name;
     int type;        // 0 tower 1 enemy
     int tower_type;  // 0 远战 1 近战
     double max_HP;
@@ -45,9 +47,10 @@ private:
     Direction direction;           // 朝向
 public:
     Property()
-        : id(0), type(1), tower_type(0), max_HP(100), cur_HP(100), max_DMG(20),
-          cur_DMG(20), attack_interval(3), velocity(0.5 * PPU), cur_v(0),
-          cost(0), collider_radius(PPU / 2), direction(East)
+        : id(0), name("unkown"), type(1), tower_type(0), max_HP(100),
+          cur_HP(100), max_DMG(20), cur_DMG(20), attack_interval(3),
+          velocity(0.5 * PPU), cur_v(0), cost(0), collider_radius(PPU / 2),
+          direction(East)
     {
         // set attackRange
         // set Route
@@ -77,6 +80,15 @@ public:
     {
         return id;
     }
+    void setName(const std::string n)
+    {
+        name = n;
+    }
+    std::string getName()
+    {
+        return name;
+    }
+
     void setType(int t)
     {
         type = t;

@@ -6,6 +6,9 @@
 #include "world.h"
 #include <chrono>
 #include <iostream>
+
+extern World main_world;
+
 class Say : public Component
 {
 public:

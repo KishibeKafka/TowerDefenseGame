@@ -1,9 +1,12 @@
+#pragma once
 #include "Vector2D.h"
 #include "actor.h"
 #include "property.h"
 #include "world.h"
 #include <cmath>
 #include <iostream>
+
+extern World main_world;
 
 class Bullet : public Actor
 {

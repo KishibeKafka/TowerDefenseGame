@@ -3,6 +3,7 @@
 #include "base.h"
 #include "component.h"
 #include "scene_component.h"
+#include <stack>
 #include <unordered_set>
 
 class Actor : public Base

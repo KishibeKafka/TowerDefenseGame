@@ -9,6 +9,8 @@
 #include "world.h"
 #include <algorithm>
 
+extern World main_world;
+
 class Attack : public Component
 {
 private:
@@ -62,7 +64,10 @@ public:
                   << refugee->getName() << '\n';
         refugee_property->addHP(-property->getCurDMG());
         if (refugee_property->getCurHP() <= 0)
+        {
             refugee->Destroy();
+            main_world.enemy_number--;
+        }
     }
     void distant_attack()
     {
@@ -84,7 +89,10 @@ public:
                   << refugee->getName() << '\n';
         refugee_property->addHP(-property->getCurDMG());
         if (refugee_property->getCurHP() <= 0)
+        {
             refugee->Destroy();
+            main_world.enemy_number--;
+        }
         // GameStatics::createActor< Bullet >()->init(refugee,
         //                                            property->getCurDMG());
     }

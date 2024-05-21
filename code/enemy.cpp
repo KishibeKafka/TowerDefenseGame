@@ -1,9 +1,13 @@
 #include "enemy.h"
+#include "attack.h"
+#include "collider.h"
+#include "enemy_move.h"
+#include "loader.h"
 #include "property.h"
+#include "say.h"
 
 Enemy::Enemy()
 {
-    Base::setName("Enemy");
     constructComponent< Property >();
 }
 
@@ -16,6 +20,9 @@ void Enemy::init(unsigned i)
 {
     Property *property = getComponentByClass< Property >();
     property->setID(i);
-    property->setType(1);
-    // ...
+    Loader::getEnemy(i, property);
+    constructComponent< EnemyMove >()->init();
+    constructComponent< Collider >()->init();
+    constructComponent< Attack >()->init();
+    constructComponent< Say >();
 }

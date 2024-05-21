@@ -1,5 +1,9 @@
 #include "tower.h"
+#include "attack.h"
+#include "collider.h"
+#include "loader.h"
 #include "property.h"
+#include "say.h"
 
 Tower::Tower()
 {
@@ -16,7 +20,8 @@ void Tower::init(unsigned i)
 {
     Property *property = getComponentByClass< Property >();
     property->setID(i);
-    property->setType(0);
-    property->setVelocity(0);
-    property->setCurrentVelocity(0);
+    Loader::getTower(i, property);
+    constructComponent< Collider >()->init();
+    constructComponent< Attack >()->init();
+    constructComponent< Say >();
 }
