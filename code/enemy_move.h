@@ -17,7 +17,7 @@ public:
     }
     void init()
     {
-        property = pOwner->constructComponent< Property >();
+        property = pOwner->getComponentByClass< Property >();
         reached = false;
         finished = false;
         step_counts = 0;
@@ -51,6 +51,11 @@ public:
     ~EnemyMove() {}
     void Update()
     {
+        if (property->getRoute().empty())
+        {
+            property->setCurrentVelocity(0);
+            pOwner->Destroy();
+        }
         if (property->getCurrentVelocity() > 0)
         {
             if (step_counts == 0 && !property->getRoute().empty())
@@ -61,7 +66,9 @@ public:
             {
                 // 扣血
                 std::cout << "Enemy Entered your HOME!\n";
+                property->setCurrentVelocity(0);
                 pOwner->Destroy();
+                // 结束？
             }
             if (reached)
             {

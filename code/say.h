@@ -19,8 +19,8 @@ public:
         {
             std::cout << "time at :"
                       << main_world.timer.getCurrrentTime().count() << '\n';
-            std::cout << pOwner->getName() << " at "
-                      << pOwner->getWorldPosition() << '\n';
+            std::cout << pOwner->getComponentByClass< Property >()->getName()
+                      << " at " << pOwner->getWorldPosition() << '\n';
             std::cout
                 << pOwner->getName() << " facing angle "
                 << (pOwner->getComponentByClass< Property >()->getDirection())

@@ -66,7 +66,6 @@ public:
         if (refugee_property->getCurHP() <= 0)
         {
             refugee->Destroy();
-            main_world.enemy_number--;
         }
     }
     void distant_attack()
@@ -91,7 +90,6 @@ public:
         if (refugee_property->getCurHP() <= 0)
         {
             refugee->Destroy();
-            main_world.enemy_number--;
         }
         // GameStatics::createActor< Bullet >()->init(refugee,
         //                                            property->getCurDMG());

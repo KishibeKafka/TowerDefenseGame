@@ -1,23 +1,21 @@
 #pragma once
 
 #include "Vector2D.h"
+#include "actor.h"
 #include "enemy_generator.h"
 #include "game_map.h"
 #include "property.h"
 #include "rapidjson/document.h"
-#include "rapidjson/filereadstream.h"
+#include "rapidjson/filewritestream.h"
+#include "rapidjson/writer.h"
 #include "tower_generator.h"
 #include "world.h"
 #include <cstdio>
-#include <queue>
-#include <string>
 
 extern World main_world;
 
-class Loader
+class Saver
 {
 public:
-    static void getEnemy(int id, Property *e_p);
-    static void getTower(int id, Property *t_p);
-    static void loadSave(std::string filename);
+    static void save(std::string filename);
 };

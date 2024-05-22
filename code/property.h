@@ -24,7 +24,7 @@ struct AttackRange
 class Property : public Component
 {
 private:
-    unsigned id;
+    int id;
     std::string name;
     int type;        // 0 tower 1 enemy
     int tower_type;  // 0 远战 1 近战
@@ -72,11 +72,11 @@ public:
         delete this;
     }
 
-    void setID(unsigned i)
+    void setID(int i)
     {
         id = i;
     }
-    unsigned getID()
+    int getID()
     {
         return id;
     }

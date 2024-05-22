@@ -16,7 +16,7 @@ void Enemy::Update()
     Actor::Update();
 }
 
-void Enemy::init(unsigned i)
+void Enemy::init(int i)
 {
     Property *property = getComponentByClass< Property >();
     property->setID(i);

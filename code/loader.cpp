@@ -1,6 +1,6 @@
 #include "loader.h"
 
-void Loader::getEnemy(int i, Property *e_p)
+void Loader::getEnemy(int id, Property *e_p)
 {
     rapidjson::Document document;
     FILE *fp = fopen("..\\resources\\data\\property.json", "rb");
@@ -13,7 +13,7 @@ void Loader::getEnemy(int i, Property *e_p)
     const rapidjson::Value &enemies = document["enemy"];
     for (rapidjson::SizeType i = 0; i < enemies.Size(); i++)
     {
-        if (enemies[i]["id"].GetInt() == i)
+        if (enemies[i]["id"].GetInt() == id)
         {
             const rapidjson::Value &e = enemies[i];
             e_p->setType(1);
@@ -38,7 +38,7 @@ void Loader::getEnemy(int i, Property *e_p)
         }
     }
 }
-void Loader::getTower(int i, Property *t_p)
+void Loader::getTower(int id, Property *t_p)
 {
     rapidjson::Document document;
     FILE *fp = fopen("..\\resources\\data\\property.json", "rb");
@@ -51,7 +51,7 @@ void Loader::getTower(int i, Property *t_p)
     const rapidjson::Value &towers = document["tower"];
     for (rapidjson::SizeType i = 0; i < towers.Size(); i++)
     {
-        if (towers[i]["id"].GetInt() == i)
+        if (towers[i]["id"].GetInt() == id)
         {
             const rapidjson::Value &t = towers[i];
             t_p->setType(0);
@@ -113,34 +113,40 @@ void Loader::loadSave(std::string filename)
     }
 
     const rapidjson::Value &enemies = document["enemies"];
-    for (rapidjson::SizeType i = 0; i < enemies.Size(); i++)
+    if (enemies.IsArray())
     {
-        std::queue< Vector2D > route_points;
-        const rapidjson::Value &r = enemies[i]["route"];
-        for (rapidjson::SizeType i = 0; i < r.Size(); i++)
+        for (rapidjson::SizeType i = 0; i < enemies.Size(); i++)
         {
-            route_points.push(Vector2D(r[i][0].GetInt(), r[i][1].GetInt()));
+            std::queue< Vector2D > route_points;
+            const rapidjson::Value &r = enemies[i]["route"];
+            for (rapidjson::SizeType i = 0; i < r.Size(); i++)
+            {
+                route_points.push(Vector2D(r[i][0].GetInt(), r[i][1].GetInt()));
+            }
+            EnemyUnit unit = {enemies[i]["id"].GetInt(),
+                              enemies[i]["spawn_time"].GetDouble(),
+                              enemies[i]["curHP"].GetDouble(),
+                              enemies[i]["curDMG"].GetDouble(),
+                              enemies[i]["curVelocity"].GetDouble(),
+                              enemies[i]["spawn_position"][0].GetInt(),
+                              enemies[i]["spawn_position"][1].GetInt(),
+                              route_points};
+            EnemyGenerator::enemies_to_generate.push(unit);
         }
-        EnemyUnit unit = {enemies[i]["id"].GetInt(),
-                          enemies[i]["spawn_time"].GetDouble(),
-                          enemies[i]["curHP"].GetDouble(),
-                          enemies[i]["curDMG"].GetDouble(),
-                          enemies[i]["curVelocity"].GetDouble(),
-                          enemies[i]["spwan_position"][0].GetInt(),
-                          enemies[i]["spwan_position"][1].GetInt(),
-                          route_points};
-        EnemyGenerator::enemies_to_generate.push(unit);
     }
 
     const rapidjson::Value &towers = document["towers"];
-    for (rapidjson::SizeType i = 0; i < towers.Size(); i++)
+    if (towers.IsArray())
     {
-        TowerUnit unit = {towers[i]["id"].GetInt(),
-                          towers[i]["curHP"].GetDouble(),
-                          towers[i]["curDMG"].GetDouble(),
-                          towers[i]["spwan_position"][0].GetInt(),
-                          towers[i]["spwan_position"][1].GetInt(),
-                          (Direction)towers[i]["direction"].GetInt()};
-        TowerGenerator::existing_towers.push(unit);
+        for (rapidjson::SizeType i = 0; i < towers.Size(); i++)
+        {
+            TowerUnit unit = {towers[i]["id"].GetInt(),
+                              towers[i]["curHP"].GetDouble(),
+                              towers[i]["curDMG"].GetDouble(),
+                              towers[i]["spawn_position"][0].GetInt(),
+                              towers[i]["spawn_position"][1].GetInt(),
+                              (Direction)towers[i]["direction"].GetInt()};
+            TowerGenerator::existing_towers.push(unit);
+        }
     }
 }

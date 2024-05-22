@@ -4,10 +4,12 @@
 #include "enemy.h"
 #include "enemy_generator.h"
 #include "loader.h"
+#include "saver.h"
 #include "say.h"
 #include "timer.h"
 #include "tower_generator.h"
 #include "world.h"
+#include <cstdlib>
 #include <thread>
 class Engine
 {
@@ -31,7 +33,7 @@ int main()
 
 void Engine::Init()
 {
-    Loader::loadSave("..\\resources\\save\\save1.json");
+    Loader::loadSave("..\\resources\\data\\map1.json");
     TowerGenerator::init();
     main_world.timer.start_timer();
 }
@@ -43,6 +45,14 @@ void render()
 
 void update()
 {
+    if (main_world.enemy_number <= 0)
+    {
+        Engine::End();
+    }
+    if (main_world.timer.getCurrrentTime().count() > 20)
+    {
+        Engine::End();
+    }
     main_world.Update();
 }
 
@@ -67,7 +77,7 @@ void trash()
     {
         for (auto &pActor : main_world.GameActors_to_delete)
         {
-            pActor->~Actor();
+            delete pActor;
             for (auto &toremove : main_world.GameActors)
             {
                 if (toremove == pActor)
@@ -115,6 +125,14 @@ void Engine::Update()
 
 void Engine::End()
 {
+    std::cout << "input y or n to save : ";
+    char decide;
+    std::cin >> decide;
+    if (decide == 'y')
+    {
+        Saver::save("..\\resources\\save\\save1.json");
+    }
+
     for (auto pActor : main_world.GameActors)
         pActor->Destroy();
     main_world.GameActors.clear();
@@ -125,4 +143,7 @@ void Engine::End()
     }
     main_world.GameActors_to_delete.clear();
     delete main_world.game_map;
+    std::cout << "Game End!\n";
+    system("pause");
+    exit(0);
 }

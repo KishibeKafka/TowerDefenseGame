@@ -3,6 +3,7 @@
 #include "enemy.h"
 #include "loader.h"
 #include "property.h"
+#include "saver.h"
 #include "world.h"
 #include <queue>
 #include <utility>
@@ -27,10 +28,12 @@ private:
     static std::queue< EnemyUnit > enemies_to_generate;
 public:
     friend class Loader;
+    friend class Saver;
     static void update()
     {
-        if (main_world.timer.getCurrrentTime().count() >=
-            enemies_to_generate.front().time_point)
+        if (!enemies_to_generate.empty() &&
+            main_world.timer.getCurrrentTime().count() >=
+                enemies_to_generate.front().time_point)
         {
             EnemyUnit unit = enemies_to_generate.front();
             Enemy *e = GameStatics::createActor< Enemy >(
@@ -41,7 +44,6 @@ public:
             e_p->setCurHP(unit.curHP);
             e_p->setCurDMG(unit.curDMG);
             e_p->setCurrentVelocity(unit.curVelocity * PPU);
-
             while (!unit.route_point.empty())
             {
                 e_p->addRoutePoint(main_world.game_map
