@@ -76,7 +76,8 @@ void Saver::save(std::string filename)
                               e_p->getCurrentVelocity(),
                               (int)(p_a->getWorldPosition().x / PPU + 0.5),
                               (int)(p_a->getWorldPosition().y / PPU + 0.5),
-                              e_p->getRoute()};
+                              e_p->getRoute(),
+                              e_p->getBuff()};
             rapidjson::Value enemy(rapidjson::kObjectType);
             enemy.AddMember("id", unit.enemy_id, allo);
             enemy.AddMember("spawn_time", 0, allo);
@@ -97,6 +98,7 @@ void Saver::save(std::string filename)
                 unit.route_point.pop();
             }
             enemy.AddMember("route", route, allo);
+            enemy.AddMember("buff", unit.buff, allo);
             enemies.PushBack(enemy, allo);
         }
     }
@@ -125,6 +127,7 @@ void Saver::save(std::string filename)
             unit.route_point.pop();
         }
         enemy.AddMember("route", route, allo);
+        enemy.AddMember("buff", unit.buff, allo);
         enemies.PushBack(enemy, allo);
         EnemyGenerator::enemies_to_generate.pop();
     }
@@ -141,7 +144,8 @@ void Saver::save(std::string filename)
                               t_p->getCurDMG(),
                               (int)(p_a->getWorldPosition().x * PPU + 0.5),
                               (int)(p_a->getWorldPosition().y * PPU + 0.5),
-                              t_p->getDirection()};
+                              t_p->getDirection(),
+                              t_p->getBuff()};
             rapidjson::Value tower(rapidjson::kObjectType);
             tower.AddMember("id", unit.tower_id, allo);
             rapidjson::Value spawn_position(rapidjson::kArrayType);
@@ -151,6 +155,7 @@ void Saver::save(std::string filename)
             tower.AddMember("direction", unit.direction, allo);
             tower.AddMember("curHP", unit.curHP, allo);
             tower.AddMember("curDMG", unit.curDMG, allo);
+            towers.AddMember("buff", unit.buff, allo);
             towers.PushBack(tower, allo);
         }
     }

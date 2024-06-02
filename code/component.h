@@ -1,6 +1,6 @@
 #pragma once
 #include "base.h"
-
+#include <random>
 class Actor;
 
 class Component : public Base
@@ -16,3 +16,5 @@ public:
     }
     virtual void Destruct();
 };
+
+int get_random(unsigned a = 1, unsigned b = 100);

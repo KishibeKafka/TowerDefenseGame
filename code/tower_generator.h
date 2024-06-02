@@ -16,6 +16,7 @@ struct TowerUnit
     int i;
     int j;
     Direction direction;
+    BuffType buff;
 };
 
 extern World main_world;

@@ -1,4 +1,5 @@
 #include "loader.h"
+#include "property.h"
 
 void Loader::getEnemy(int id, Property *e_p)
 {
@@ -130,7 +131,8 @@ void Loader::loadSave(std::string filename)
                               enemies[i]["curVelocity"].GetDouble(),
                               enemies[i]["spawn_position"][0].GetInt(),
                               enemies[i]["spawn_position"][1].GetInt(),
-                              route_points};
+                              route_points,
+                              (BuffType)enemies[i]["buff"].GetInt()};
             EnemyGenerator::enemies_to_generate.push(unit);
         }
     }
@@ -145,7 +147,8 @@ void Loader::loadSave(std::string filename)
                               towers[i]["curDMG"].GetDouble(),
                               towers[i]["spawn_position"][0].GetInt(),
                               towers[i]["spawn_position"][1].GetInt(),
-                              (Direction)towers[i]["direction"].GetInt()};
+                              (Direction)towers[i]["direction"].GetInt(),
+                              (BuffType)towers[i]["buff"].GetInt()};
             TowerGenerator::existing_towers.push(unit);
         }
     }

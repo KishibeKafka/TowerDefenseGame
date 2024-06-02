@@ -21,6 +21,16 @@ struct AttackRange
     Vector2D southwest;
     Vector2D northeast;
 };
+
+enum BuffType
+{
+    Empty = 0,
+    addHP,
+    addDMG,
+    addVelocity,
+    quickAttack
+};
+
 class Property : public Component
 {
 private:
@@ -45,12 +55,13 @@ private:
     std::vector< AttackRange >::iterator range_iter;  // 迭代器
     std::queue< Vector2D > route;  // 路径节点，相对于地图
     Direction direction;           // 朝向
+    BuffType buff;                 // 词缀
 public:
     Property()
         : id(0), name("unkown"), type(1), tower_type(0), max_HP(100),
           cur_HP(100), max_DMG(20), cur_DMG(20), attack_interval(3),
           velocity(0.5 * PPU), cur_v(0), cost(0), collider_radius(PPU / 2),
-          direction(East)
+          direction(East), buff(Empty)
     {
         // set attackRange
         // set Route
@@ -210,5 +221,13 @@ public:
     double getRadius()
     {
         return collider_radius;
+    }
+    BuffType getBuff()
+    {
+        return buff;
+    }
+    void setBuff(BuffType b)
+    {
+        buff = b;
     }
 };

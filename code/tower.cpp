@@ -1,5 +1,6 @@
 #include "tower.h"
 #include "attack.h"
+#include "buff_manager.h"
 #include "collider.h"
 #include "loader.h"
 #include "property.h"
@@ -24,4 +25,5 @@ void Tower::init(unsigned i)
     constructComponent< Collider >()->init();
     constructComponent< Attack >()->init();
     constructComponent< Say >();
+    constructComponent< BuffManager >()->init();
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector2D.h"
+#include "buff_manager.h"
 #include "enemy.h"
 #include "loader.h"
 #include "property.h"
@@ -20,6 +21,7 @@ struct EnemyUnit
     int i;
     int j;
     std::queue< Vector2D > route_point;  // no ppu
+    BuffType buff;
 };
 
 class EnemyGenerator
@@ -44,6 +46,11 @@ public:
             e_p->setCurHP(unit.curHP);
             e_p->setCurDMG(unit.curDMG);
             e_p->setCurrentVelocity(unit.curVelocity * PPU);
+            if (unit.time_point > 0)
+            {
+                e->getComponentByClass< BuffManager >()->addBuff();
+            }
+
             while (!unit.route_point.empty())
             {
                 e_p->addRoutePoint(main_world.game_map
