@@ -5,7 +5,6 @@
 #include "enemy_move.h"
 #include "loader.h"
 #include "property.h"
-#include "say.h"
 
 Enemy::Enemy()
 {
@@ -25,6 +24,5 @@ void Enemy::init(int i)
     constructComponent< EnemyMove >()->init();
     constructComponent< Collider >()->init();
     constructComponent< Attack >()->init();
-    constructComponent< Say >();
     constructComponent< BuffManager >()->init();
 }

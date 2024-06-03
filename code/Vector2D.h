@@ -1,9 +1,9 @@
 #pragma once
 #include <cmath>
+#include <graphics.h>
 #include <ostream>
 
-#define PI  3.14159265358979323846
-#define PPU 32.0
+#define PPU 64.0
 
 class Vector2D
 {

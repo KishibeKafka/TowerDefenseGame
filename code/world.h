@@ -3,8 +3,40 @@
 #include "actor.h"
 #include "game_map.h"
 #include "timer.h"
+#include <graphics.h>
 #include <unordered_set>
 #include <vector>
+
+class WorldRender
+{
+private:
+    PIMAGE path;
+    PIMAGE highplace;
+    PIMAGE tower1;
+    PIMAGE enemy1;
+    PIMAGE home;
+    bool drag;
+    int angle;
+    int id;
+public:
+    mouse_msg mm;
+    key_msg km;
+    WorldRender()
+    {
+        ;
+    }
+    ~WorldRender()
+    {
+        delimage(path);
+        delimage(highplace);
+        delimage(tower1);
+        delimage(enemy1);
+        delimage(home);
+    }
+    void init();
+    void rend();
+};
+
 class World final
 {
 public:
@@ -15,7 +47,7 @@ public:
     std::unordered_set< Actor * > GameActors;
     std::vector< Actor * > GameActors_to_add;
     std::unordered_set< Actor * > GameActors_to_delete;
-
+    WorldRender world_render;
     friend class Engine;
 
     World() : current_cost(0), enemy_number(0) {}

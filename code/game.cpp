@@ -12,7 +12,6 @@
 #include <cstdlib>
 #include <thread>
 
-
 class Engine
 {
 public:
@@ -37,87 +36,79 @@ void Engine::Init()
 {
     Loader::loadSave("..\\resources\\data\\map1.json");
     TowerGenerator::init();
+    main_world.world_render.init();
     main_world.timer.start_timer();
 }
 
 void render()
 {
-    main_world.Render();
+    for (; is_run(); delay_fps(60))
+    {
+        main_world.Render();
+    }
 }
 
 void update()
 {
-    if (main_world.enemy_number <= 0)
+    for (; is_run(); delay(60))
     {
-        Engine::End();
+        if (main_world.enemy_number <= 0)
+        {
+            Engine::End();
+        }
+        main_world.Update();
     }
-    if (main_world.timer.getCurrrentTime().count() > 20)
-    {
-        Engine::End();
-    }
-    main_world.Update();
 }
 
 void input()
 {
-    main_world.Input();
+    for (; is_run(); delay(60))
+    {
+        main_world.Input();
+    }
 }
 
 void add()
 {
-    if (!main_world.GameActors_to_add.empty())
+    for (; is_run(); delay(60))
     {
-        for (auto &pActor : main_world.GameActors_to_add)
-            main_world.GameActors.insert(pActor);
+        if (!main_world.GameActors_to_add.empty())
+        {
+            for (auto &pActor : main_world.GameActors_to_add)
+                main_world.GameActors.insert(pActor);
+        }
+        main_world.GameActors_to_add.clear();
     }
-    main_world.GameActors_to_add.clear();
 }
 
 void trash()
 {
-    if (!main_world.GameActors_to_delete.empty())
+    for (; is_run(); delay(60))
     {
-        for (auto &pActor : main_world.GameActors_to_delete)
+        if (!main_world.GameActors_to_delete.empty())
         {
-            delete pActor;
-            for (auto &toremove : main_world.GameActors)
+            for (auto &pActor : main_world.GameActors_to_delete)
             {
-                if (toremove == pActor)
-                    main_world.GameActors.erase(toremove);
+                delete pActor;
+                for (auto &toremove : main_world.GameActors)
+                {
+                    if (toremove == pActor)
+                        main_world.GameActors.erase(toremove);
+                }
             }
         }
+        main_world.GameActors_to_delete.clear();
     }
-    main_world.GameActors_to_delete.clear();
 }
 
 void Engine::Update()
 {
     std::cout << "updating\n";
-    std::thread ad(
-        [](void) -> void
-        {
-            main_world.timer.fixedExecute(add);
-        });
-    std::thread rend(
-        [](void) -> void
-        {
-            main_world.timer.fixedExecute(render);
-        });
-    std::thread upd(
-        [](void) -> void
-        {
-            main_world.timer.fixedExecute(update);
-        });
-    std::thread inp(
-        [](void) -> void
-        {
-            main_world.timer.fixedExecute(input);
-        });
-    std::thread tra(
-        [](void) -> void
-        {
-            main_world.timer.fixedExecute(trash);
-        });
+    std::thread ad(add);
+    std::thread rend(render);
+    std::thread upd(update);
+    std::thread inp(input);
+    std::thread tra(trash);
     ad.join();
     rend.join();
     upd.join();

@@ -4,7 +4,6 @@
 #include "collider.h"
 #include "loader.h"
 #include "property.h"
-#include "say.h"
 
 Tower::Tower()
 {
@@ -24,6 +23,5 @@ void Tower::init(unsigned i)
     Loader::getTower(i, property);
     constructComponent< Collider >()->init();
     constructComponent< Attack >()->init();
-    constructComponent< Say >();
     constructComponent< BuffManager >()->init();
 }
