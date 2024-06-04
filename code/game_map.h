@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector2D.h"
+#include "actor.h"
 #include <cstdlib>
 #include <vector>
 
@@ -9,7 +10,8 @@ struct Grid
     int status;  // 0 avaiable 1 已被占用
     int i;
     int j;
-    Grid() : type(0), status(0), i(1), j(1) {}
+    Actor *pTower;
+    Grid() : type(0), status(0), i(1), j(1), pTower(nullptr) {}
     Vector2D getlocation()
     {
         return Vector2D(i * PPU - PPU / 2, j * PPU - PPU / 2);

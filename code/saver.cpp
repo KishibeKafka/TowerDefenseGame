@@ -1,5 +1,4 @@
 #include "saver.h"
-#include <cassert>
 
 void Saver::save(std::string filename)
 {
@@ -66,6 +65,8 @@ void Saver::save(std::string filename)
     rapidjson::Value enemies(rapidjson::kArrayType);
     for (auto &p_a : main_world.GameActors)
     {
+        if (p_a == nullptr || !p_a->alive)
+            continue;
         Property *e_p = p_a->getComponentByClass< Property >();
         if (e_p->getType() == 1)
         {
@@ -98,7 +99,7 @@ void Saver::save(std::string filename)
                 unit.route_point.pop();
             }
             enemy.AddMember("route", route, allo);
-            enemy.AddMember("buff", unit.buff, allo);
+            enemy.AddMember("buff", (int)unit.buff, allo);
             enemies.PushBack(enemy, allo);
         }
     }
@@ -127,7 +128,7 @@ void Saver::save(std::string filename)
             unit.route_point.pop();
         }
         enemy.AddMember("route", route, allo);
-        enemy.AddMember("buff", unit.buff, allo);
+        enemy.AddMember("buff", (int)unit.buff, allo);
         enemies.PushBack(enemy, allo);
         EnemyGenerator::enemies_to_generate.pop();
     }
@@ -136,6 +137,8 @@ void Saver::save(std::string filename)
     rapidjson::Value towers(rapidjson::kArrayType);
     for (auto &p_a : main_world.GameActors)
     {
+        if (p_a == nullptr || !p_a->alive)
+            continue;
         Property *t_p = p_a->getComponentByClass< Property >();
         if (t_p->getType() == 0)
         {
@@ -155,7 +158,7 @@ void Saver::save(std::string filename)
             tower.AddMember("direction", unit.direction, allo);
             tower.AddMember("curHP", unit.curHP, allo);
             tower.AddMember("curDMG", unit.curDMG, allo);
-            towers.AddMember("buff", unit.buff, allo);
+            towers.AddMember("buff", (int)unit.buff, allo);
             towers.PushBack(tower, allo);
         }
     }

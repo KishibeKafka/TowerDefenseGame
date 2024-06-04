@@ -26,5 +26,8 @@ public:
         this->name = name;
     }
 
-    virtual void Update() = 0;
+    virtual void Update()
+    {
+        ;
+    }
 };

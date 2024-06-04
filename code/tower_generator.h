@@ -41,14 +41,23 @@ public:
             existing_towers.pop();
         }
     }
-
+    static void build_tower(int id, int i, int j, int dir)
+    {
+        Tower *tower = GameStatics::createActor< Tower >(
+            main_world.game_map->grids[i][j].getlocation());
+        tower->init(id);
+        tower->getComponentByClass< Property >()->setDirection((Direction)dir);
+        main_world.current_cost -= 100;
+        main_world.game_map->grids[i][j].status = 1;  // 改变地块状态
+        main_world.game_map->grids[i][j].pTower = tower;
+        std::cout << "Tower Built!\n";
+    }
     static void input(int _id, int i, int j, int dir)
     {
         if (i <= 0 || i > main_world.game_map->size_x || j <= 0 ||
             j > main_world.game_map->size_y)
             return;
         int id = _id;
-        Tower *tower;
         switch (id)
         {
         case 1:
@@ -60,17 +69,18 @@ public:
                 main_world.game_map->grids[i][j].type == 2 ||
                 main_world.game_map->grids[i][j].status == 1)
             {
-                std::cout << "cannot build here!\n";
                 return;
             }
-            main_world.game_map->grids[i][j].status = 1;  // 改变地块状态
-            tower = GameStatics::createActor< Tower >(
-                main_world.game_map->grids[i][j].getlocation());
-            tower->init(id);
-            tower->getComponentByClass< Property >()->setDirection(
-                (Direction)dir);
-            main_world.current_cost -= 100;
-            std::cout << "Tower Built!\n";
+            build_tower(id, i, j, dir);
+            break;
+        case 2:
+            if (main_world.current_cost < 200)
+                return;
+            if (main_world.game_map->grids[i][j].type == 0 ||
+                main_world.game_map->grids[i][j].type == 1 ||
+                main_world.game_map->grids[i][j].status == 1)
+                return;
+            build_tower(id, i, j, dir);
             break;
         default: std::cout << "no such tower id!\n"; return;
         }

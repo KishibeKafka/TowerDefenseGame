@@ -1,40 +1,14 @@
-#include "actor.h"
-#include "attack.h"
-#include "collider.h"
-#include "enemy.h"
-#include "enemy_generator.h"
-#include "loader.h"
-#include "saver.h"
-#include "say.h"
-#include "timer.h"
-#include "tower_generator.h"
-#include "world.h"
-#include <cstdlib>
-#include <thread>
+#include "engine.h"
 
-class Engine
+std::string Engine::save;
+
+bool Engine::end;
+
+void Engine::Init(std::string path)
 {
-public:
-    static Enemy *enemy;
-
-    static void Init();
-    static void Update();
-    static void End();
-};
-
-extern World main_world;
-
-int main()
-{
-    Engine::Init();
-    Engine::Update();
-    Engine::End();
-    return 0;
-}
-
-void Engine::Init()
-{
-    Loader::loadSave("..\\resources\\data\\map1.json");
+    save = path;
+    end = false;
+    Loader::loadSave(path);
     TowerGenerator::init();
     main_world.world_render.init();
     main_world.timer.start_timer();
@@ -42,7 +16,7 @@ void Engine::Init()
 
 void render()
 {
-    for (; is_run(); delay_fps(60))
+    for (; is_run() && !Engine::end; delay_fps(60))
     {
         main_world.Render();
     }
@@ -50,7 +24,7 @@ void render()
 
 void update()
 {
-    for (; is_run(); delay(60))
+    for (; is_run() && !Engine::end; delay(60))
     {
         if (main_world.enemy_number <= 0)
         {
@@ -62,7 +36,7 @@ void update()
 
 void input()
 {
-    for (; is_run(); delay(60))
+    for (; is_run() && !Engine::end; delay(60))
     {
         main_world.Input();
     }
@@ -70,7 +44,7 @@ void input()
 
 void add()
 {
-    for (; is_run(); delay(60))
+    for (; is_run() && !Engine::end; delay(20))
     {
         if (!main_world.GameActors_to_add.empty())
         {
@@ -83,7 +57,7 @@ void add()
 
 void trash()
 {
-    for (; is_run(); delay(60))
+    for (; is_run() && !Engine::end; delay(20))
     {
         if (!main_world.GameActors_to_delete.empty())
         {
@@ -118,14 +92,6 @@ void Engine::Update()
 
 void Engine::End()
 {
-    std::cout << "input y or n to save : ";
-    char decide;
-    std::cin >> decide;
-    if (decide == 'y')
-    {
-        Saver::save("..\\resources\\save\\save1.json");
-    }
-
     for (auto pActor : main_world.GameActors)
         pActor->Destroy();
     main_world.GameActors.clear();
@@ -136,7 +102,4 @@ void Engine::End()
     }
     main_world.GameActors_to_delete.clear();
     delete main_world.game_map;
-    std::cout << "Game End!\n";
-    system("pause");
-    exit(0);
 }

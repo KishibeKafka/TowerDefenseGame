@@ -67,7 +67,6 @@ void Loader::getTower(int id, Property *t_p)
             t_p->setCurrentVelocity(0);
             t_p->setRadius(t["radius"].GetDouble() * PPU);
             t_p->setCost(t["cost"].GetInt());
-
             const rapidjson::Value &range = t["attack_range"];
             for (rapidjson::SizeType i = 0; i < range.Size(); i++)
             {

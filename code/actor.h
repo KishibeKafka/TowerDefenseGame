@@ -10,21 +10,22 @@ class Actor : public Base
 {
     // actor关系
 public:
-    std::unordered_set< Actor * > children;
-    Actor *parent = nullptr;
+    bool alive;
     // 组件
     std::unordered_set< Component * > components;
     std::unordered_set< Component * >::iterator components_iter;
     SceneComponent *const root = new SceneComponent;
     Actor()
     {
+        alive = true;
         root->setOwner(this);
     }
     virtual ~Actor()
     {
+        alive = false;
         for (auto &compo : components)
         {
-            delete compo;  // ~Component
+            compo->Destruct();  // ~Component
         }
         delete root;
     }

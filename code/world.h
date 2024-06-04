@@ -4,8 +4,20 @@
 #include "game_map.h"
 #include "timer.h"
 #include <graphics.h>
+#include <list>
 #include <unordered_set>
 #include <vector>
+
+class Engine;
+
+struct attack_signal
+{
+    double x1;
+    double y1;
+    double x2;
+    double y2;
+    double end_time;
+};
 
 class WorldRender
 {
@@ -13,14 +25,24 @@ private:
     PIMAGE path;
     PIMAGE highplace;
     PIMAGE tower1;
+    PIMAGE tower2;
     PIMAGE enemy1;
+    PIMAGE enemy2;
     PIMAGE home;
-    bool drag;
+    PIMAGE dollar;
+    PIMAGE buff1;
+    PIMAGE buff2;
+    PIMAGE buff3;
+    PIMAGE buff4;
+    PIMAGE save_bar;
+    PIMAGE close_bar;
+    int drag_tower;
+    int drag_buff;
     int angle;
-    int id;
 public:
     mouse_msg mm;
     key_msg km;
+    std::list< attack_signal > signals_to_draw;
     WorldRender()
     {
         ;
@@ -31,7 +53,16 @@ public:
         delimage(highplace);
         delimage(tower1);
         delimage(enemy1);
+        delimage(tower2);
+        delimage(enemy2);
         delimage(home);
+        delimage(dollar);
+        delimage(buff1);
+        delimage(buff2);
+        delimage(buff3);
+        delimage(buff4);
+        delimage(save_bar);
+        delimage(close_bar);
     }
     void init();
     void rend();
@@ -44,13 +75,18 @@ public:
     GameMap *game_map;
     int current_cost;
     int enemy_number;
+    int number_of_buff[5];
     std::unordered_set< Actor * > GameActors;
     std::vector< Actor * > GameActors_to_add;
     std::unordered_set< Actor * > GameActors_to_delete;
     WorldRender world_render;
     friend class Engine;
 
-    World() : current_cost(0), enemy_number(0) {}
+    World() : current_cost(0), enemy_number(0)
+    {
+        for (int i = 0; i <= 4; ++i)
+            number_of_buff[i] = 0;
+    }
 
     void Render();
 

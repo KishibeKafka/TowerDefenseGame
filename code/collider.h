@@ -3,7 +3,9 @@
 #include "actor.h"
 #include "component.h"
 #include "property.h"
+#include "timer.h"
 #include "world.h"
+#include <algorithm>
 #include <iostream>
 #include <vector>
 
@@ -17,13 +19,17 @@ private:
     std::vector< Actor * > collidingActors;
     std::vector< Actor * > detectedActors;
     Property *property;
+    Timer timer;
+    double last_attack;
 public:
     Collider() {}
     ~Collider() {}
     void init()
     {
         property = pOwner->getComponentByClass< Property >();
-        if (property->getType() == 0)
+        timer.start_timer();
+        last_attack = 0;
+        if (property->getType() == 0)  // tower
         {
             layer = 0;
             detectlayer = 1;
@@ -39,6 +45,7 @@ public:
         detectCollide();
         detectActor();
         Recycle();
+        Attack();
     }
     void Destruct()
     {
@@ -46,6 +53,143 @@ public:
         delete this;
     }
 
+    bool in_range(Actor *pactor)
+    {
+        if (main_world.GameActors_to_delete.find(pactor) !=
+                main_world.GameActors_to_delete.end() ||
+            pactor == nullptr || !pactor->alive)
+            return false;
+        auto it = property->getRangeIter();
+        while (it != property->getAttackRange().end())
+        {
+            Vector2D real_southwest(
+                pOwner->getWorldPosition() +
+                Vector2D::Rotate(property->getDirection(), it->southwest) +
+                Vector2D(
+                    -pactor->getComponentByClass< Property >()->getRadius(),
+                    -pactor->getComponentByClass< Property >()->getRadius()));
+            Vector2D real_northeast(
+                pOwner->getWorldPosition() +
+                Vector2D::Rotate(property->getDirection(), it->northeast) +
+                Vector2D(
+                    pactor->getComponentByClass< Property >()->getRadius(),
+                    pactor->getComponentByClass< Property >()->getRadius()));
+
+            if ((pactor->getWorldPosition().x - real_southwest.x) *
+                        (pactor->getWorldPosition().x - real_northeast.x) <
+                    0 &&
+                (pactor->getWorldPosition().y - real_southwest.y) *
+                        (pactor->getWorldPosition().y - real_northeast.y) <
+                    0)
+            {
+                return true;
+            }
+            it++;
+        }
+        return false;
+    }
+    void close_attack()
+    {
+        Actor *refugee = nullptr;
+        for (auto pactor : collidingActors)
+        {
+            if (main_world.GameActors.find(pactor) !=
+                    main_world.GameActors.end() &&
+                pactor && pactor->alive)
+            {
+                refugee = pactor;
+                break;
+            }
+        }
+        if (refugee == nullptr)
+            return;
+        for (auto &p_actor : getCollidingActors())
+        {
+            if (main_world.GameActors.find(p_actor) ==
+                    main_world.GameActors.end() ||
+                p_actor == nullptr || !p_actor->alive)
+                continue;
+            if (p_actor->getComponentByClass< Property >()->getCurHP() <
+                refugee->getComponentByClass< Property >()->getCurHP())
+                refugee = p_actor;
+        }  // 先打血量最少的
+        auto refugee_property = refugee->getComponentByClass< Property >();
+        refugee_property->addHP(-property->getCurDMG());
+
+        main_world.world_render.signals_to_draw.push_back(
+            {pOwner->getWorldPosition().x, pOwner->getWorldPosition().y,
+             refugee->getWorldPosition().x, refugee->getWorldPosition().y,
+             main_world.timer.getCurrrentTime().count() + 0.1});
+
+        if (refugee_property->getCurHP() <= 0)
+        {
+            main_world.number_of_buff[refugee_property->getBuff()]++;
+            refugee->alive = false;
+            refugee->Destroy();
+        }
+    }
+    void distant_attack()
+    {
+        Actor *refugee = nullptr;
+        for (auto pactor : detectedActors)
+        {
+            if (main_world.GameActors.find(pactor) !=
+                    main_world.GameActors.end() &&
+                pactor && pactor->alive)
+            {
+                refugee = pactor;
+                break;
+            }
+        }
+        if (refugee == nullptr)
+            return;
+        for (auto &p_actor : getDetectedActors())
+        {
+            if (main_world.GameActors.find(p_actor) ==
+                    main_world.GameActors.end() ||
+                p_actor == nullptr || !p_actor->alive)
+                continue;
+            if (Vector2D::Distance(p_actor->getWorldPosition(),
+                                   p_actor->getComponentByClass< Property >()
+                                       ->getRoute()
+                                       .back()) <
+                Vector2D::Distance(refugee->getWorldPosition(),
+                                   refugee->getComponentByClass< Property >()
+                                       ->getRoute()
+                                       .back()))
+                refugee = p_actor;
+        }  // 先打距离家最近的
+        Property *refugee_property = refugee->getComponentByClass< Property >();
+
+        main_world.world_render.signals_to_draw.push_back(
+            {pOwner->getWorldPosition().x, pOwner->getWorldPosition().y,
+             refugee->getWorldPosition().x, refugee->getWorldPosition().y,
+             main_world.timer.getCurrrentTime().count() + 0.1});
+
+        refugee_property->addHP(-property->getCurDMG());
+        if (refugee_property->getCurHP() <= 0)
+        {
+            main_world.number_of_buff[refugee_property->getBuff()]++;
+            refugee->alive = false;
+            refugee->Destroy();
+        }
+    }
+    void Attack()
+    {
+        if (timer.getCurrrentTime().count() - last_attack >
+            property->getAttackInterval())
+        {
+            if (!getCollidingActors().empty())
+            {
+                close_attack();
+                last_attack = timer.getCurrrentTime().count();
+            } else if (!getDetectedActors().empty())
+            {
+                distant_attack();
+                last_attack = timer.getCurrrentTime().count();
+            }
+        }
+    }
     void Recycle()
     {
         // 回收已经死掉的actor
@@ -53,7 +197,8 @@ public:
              iter != collidingActors.end();)
         {
             if (main_world.GameActors.find(*iter) ==
-                main_world.GameActors.end())
+                    main_world.GameActors.end() ||
+                (*iter) == nullptr || !(*iter)->alive)
                 iter = collidingActors.erase(iter);
             else
                 iter++;
@@ -65,10 +210,17 @@ public:
         for (auto iter = detectedActors.begin(); iter != detectedActors.end();)
         {
             if (main_world.GameActors.find(*iter) ==
-                main_world.GameActors.end())
+                    main_world.GameActors.end() ||
+                (*iter) == nullptr || !(*iter)->alive)
                 iter = detectedActors.erase(iter);
             else
-                iter++;
+            {
+                if (!in_range(*iter))
+                {
+                    iter = detectedActors.erase(iter);
+                } else
+                    iter++;
+            }
         }
     }
 
@@ -76,6 +228,12 @@ public:
     {
         for (auto &actor : main_world.GameActors)
         {
+            if (main_world.GameActors_to_delete.find(actor) !=
+                    main_world.GameActors_to_delete.end() ||
+                actor == nullptr || !actor->alive)
+            {
+                continue;
+            }
             Collider *other = actor->getComponentByClass< Collider >();
             if (other && other->getLayer() == detectlayer)
             {
@@ -96,8 +254,6 @@ public:
                                        other->pOwner->getWorldPosition()) <=
                     property->getRadius() + other->property->getRadius())
                 {
-                    std::cout << pOwner->getName() << " Collding "
-                              << actor->getName() << '\n';
                     collidingActors.push_back(actor);
                     property->setCurrentVelocity(0);
                 }
@@ -108,6 +264,12 @@ public:
     {
         for (auto &actor : main_world.GameActors)
         {
+            if (main_world.GameActors_to_delete.find(actor) !=
+                    main_world.GameActors_to_delete.end() ||
+                actor == nullptr || !actor->alive)
+            {
+                continue;
+            }
             Collider *other = actor->getComponentByClass< Collider >();
             if (other && other->getLayer() == detectlayer)
             {
@@ -117,41 +279,16 @@ public:
                     for (auto &d_actors : detectedActors)
                     {
                         if (d_actors == actor)
+                        {
                             find = true;
+                        }
                     }
                 }
                 if (find)
                     continue;
 
-                auto it = property->getRangeIter();
-                while (it != property->getAttackRange().end())
-                {
-                    Vector2D real_southwest(
-                        pOwner->getWorldPosition() +
-                        Vector2D::Rotate(property->getDirection(),
-                                         it->southwest) +
-                        Vector2D(-other->property->getRadius(),
-                                 -other->property->getRadius()));
-                    Vector2D real_northeast(
-                        pOwner->getWorldPosition() +
-                        Vector2D::Rotate(property->getDirection(),
-                                         it->northeast) +
-                        Vector2D(other->property->getRadius(),
-                                 other->property->getRadius()));
-
-                    if ((actor->getWorldPosition().x - real_southwest.x) *
-                                (actor->getWorldPosition().x -
-                                 real_northeast.x) <
-                            0 &&
-                        (actor->getWorldPosition().y - real_southwest.y) *
-                                (actor->getWorldPosition().y -
-                                 real_northeast.y) <
-                            0)
-                    {
-                        detectedActors.push_back(actor);
-                    }
-                    it++;
-                }
+                if (in_range(actor))
+                    detectedActors.push_back(actor);
             }
         }
     }
@@ -163,6 +300,14 @@ public:
     int getDetectLayer()
     {
         return detectlayer;
+    }
+    void setLayer(int l)
+    {
+        layer = l;
+    }
+    void setDetectLayer(int dl)
+    {
+        detectlayer = dl;
     }
     std::vector< Actor * > &getCollidingActors()
     {
