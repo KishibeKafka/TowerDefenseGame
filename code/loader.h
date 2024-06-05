@@ -12,7 +12,7 @@
 #include <queue>
 #include <string>
 
-extern World main_world;
+extern World *main_world;
 
 class Loader
 {

@@ -92,15 +92,15 @@ void Loader::loadSave(std::string filename)
     rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
     document.ParseStream(is);
     fclose(fp);
-    main_world.game_map =
+    main_world->game_map =
         new GameMap(document["size"][0].GetInt(), document["size"][1].GetInt());
-    main_world.enemy_number = document["enemy_number"].GetInt();
-    main_world.current_cost = document["current_cost"].GetInt();
+    main_world->enemy_number = document["enemy_number"].GetInt();
+    main_world->current_cost = document["current_cost"].GetInt();
 
     const rapidjson::Value &buffs = document["buff"];
     for (rapidjson::SizeType i = 0; i < buffs.Size(); i++)
     {
-        main_world.number_of_buff[i + 1] = buffs[i].GetInt();
+        main_world->number_of_buff[i + 1] = buffs[i].GetInt();
     }
 
     const rapidjson::Value &paths = document["path"];
@@ -110,7 +110,7 @@ void Loader::loadSave(std::string filename)
         int y1 = paths[i][0][1].GetInt();
         int x2 = paths[i][1][0].GetInt();
         int y2 = paths[i][1][1].GetInt();
-        main_world.game_map->addPath(x1, y1, x2, y2);
+        main_world->game_map->addPath(x1, y1, x2, y2);
     }
     const rapidjson::Value &high = document["highplace"];
     for (rapidjson::SizeType i = 0; i < high.Size(); i++)
@@ -119,7 +119,7 @@ void Loader::loadSave(std::string filename)
         int y1 = high[i][0][1].GetInt();
         int x2 = high[i][1][0].GetInt();
         int y2 = high[i][1][1].GetInt();
-        main_world.game_map->addHighPlace(x1, y1, x2, y2);
+        main_world->game_map->addHighPlace(x1, y1, x2, y2);
     }
     const rapidjson::Value &enemies = document["enemies"];
     if (enemies.IsArray())

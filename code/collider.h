@@ -9,7 +9,7 @@
 #include <iostream>
 #include <vector>
 
-extern World main_world;
+extern World *main_world;
 
 class Collider : public Component  // 这边就只用圆形的
 {
@@ -55,8 +55,8 @@ public:
 
     bool in_range(Actor *pactor)
     {
-        if (main_world.GameActors_to_delete.find(pactor) !=
-                main_world.GameActors_to_delete.end() ||
+        if (main_world->GameActors_to_delete.find(pactor) !=
+                main_world->GameActors_to_delete.end() ||
             pactor == nullptr || !pactor->alive)
             return false;
         auto it = property->getRangeIter();
@@ -93,8 +93,8 @@ public:
         Actor *refugee = nullptr;
         for (auto pactor : collidingActors)
         {
-            if (main_world.GameActors.find(pactor) !=
-                    main_world.GameActors.end() &&
+            if (main_world->GameActors.find(pactor) !=
+                    main_world->GameActors.end() &&
                 pactor && pactor->alive)
             {
                 refugee = pactor;
@@ -105,8 +105,8 @@ public:
             return;
         for (auto &p_actor : getCollidingActors())
         {
-            if (main_world.GameActors.find(p_actor) ==
-                    main_world.GameActors.end() ||
+            if (main_world->GameActors.find(p_actor) ==
+                    main_world->GameActors.end() ||
                 p_actor == nullptr || !p_actor->alive)
                 continue;
             if (p_actor->getComponentByClass< Property >()->getCurHP() <
@@ -116,14 +116,14 @@ public:
         auto refugee_property = refugee->getComponentByClass< Property >();
         refugee_property->addHP(-property->getCurDMG());
 
-        main_world.world_render.signals_to_draw.push_back(
+        main_world->world_render.signals_to_draw.push_back(
             {pOwner->getWorldPosition().x, pOwner->getWorldPosition().y,
              refugee->getWorldPosition().x, refugee->getWorldPosition().y,
-             main_world.timer.getCurrrentTime().count() + 0.1});
+             main_world->timer.getCurrrentTime().count() + 0.1});
 
         if (refugee_property->getCurHP() <= 0)
         {
-            main_world.number_of_buff[refugee_property->getBuff()]++;
+            main_world->number_of_buff[refugee_property->getBuff()]++;
             refugee->alive = false;
             refugee->Destroy();
         }
@@ -133,8 +133,8 @@ public:
         Actor *refugee = nullptr;
         for (auto pactor : detectedActors)
         {
-            if (main_world.GameActors.find(pactor) !=
-                    main_world.GameActors.end() &&
+            if (main_world->GameActors.find(pactor) !=
+                    main_world->GameActors.end() &&
                 pactor && pactor->alive)
             {
                 refugee = pactor;
@@ -145,8 +145,8 @@ public:
             return;
         for (auto &p_actor : getDetectedActors())
         {
-            if (main_world.GameActors.find(p_actor) ==
-                    main_world.GameActors.end() ||
+            if (main_world->GameActors.find(p_actor) ==
+                    main_world->GameActors.end() ||
                 p_actor == nullptr || !p_actor->alive)
                 continue;
             if (Vector2D::Distance(p_actor->getWorldPosition(),
@@ -161,15 +161,15 @@ public:
         }  // 先打距离家最近的
         Property *refugee_property = refugee->getComponentByClass< Property >();
 
-        main_world.world_render.signals_to_draw.push_back(
+        main_world->world_render.signals_to_draw.push_back(
             {pOwner->getWorldPosition().x, pOwner->getWorldPosition().y,
              refugee->getWorldPosition().x, refugee->getWorldPosition().y,
-             main_world.timer.getCurrrentTime().count() + 0.1});
+             main_world->timer.getCurrrentTime().count() + 0.1});
 
         refugee_property->addHP(-property->getCurDMG());
         if (refugee_property->getCurHP() <= 0)
         {
-            main_world.number_of_buff[refugee_property->getBuff()]++;
+            main_world->number_of_buff[refugee_property->getBuff()]++;
             refugee->alive = false;
             refugee->Destroy();
         }
@@ -196,8 +196,8 @@ public:
         for (auto iter = collidingActors.begin();
              iter != collidingActors.end();)
         {
-            if (main_world.GameActors.find(*iter) ==
-                    main_world.GameActors.end() ||
+            if (main_world->GameActors.find(*iter) ==
+                    main_world->GameActors.end() ||
                 (*iter) == nullptr || !(*iter)->alive)
                 iter = collidingActors.erase(iter);
             else
@@ -209,8 +209,8 @@ public:
 
         for (auto iter = detectedActors.begin(); iter != detectedActors.end();)
         {
-            if (main_world.GameActors.find(*iter) ==
-                    main_world.GameActors.end() ||
+            if (main_world->GameActors.find(*iter) ==
+                    main_world->GameActors.end() ||
                 (*iter) == nullptr || !(*iter)->alive)
                 iter = detectedActors.erase(iter);
             else
@@ -226,10 +226,10 @@ public:
 
     void detectCollide()
     {
-        for (auto &actor : main_world.GameActors)
+        for (auto &actor : main_world->GameActors)
         {
-            if (main_world.GameActors_to_delete.find(actor) !=
-                    main_world.GameActors_to_delete.end() ||
+            if (main_world->GameActors_to_delete.find(actor) !=
+                    main_world->GameActors_to_delete.end() ||
                 actor == nullptr || !actor->alive)
             {
                 continue;
@@ -262,10 +262,10 @@ public:
     }
     void detectActor()
     {
-        for (auto &actor : main_world.GameActors)
+        for (auto &actor : main_world->GameActors)
         {
-            if (main_world.GameActors_to_delete.find(actor) !=
-                    main_world.GameActors_to_delete.end() ||
+            if (main_world->GameActors_to_delete.find(actor) !=
+                    main_world->GameActors_to_delete.end() ||
                 actor == nullptr || !actor->alive)
             {
                 continue;

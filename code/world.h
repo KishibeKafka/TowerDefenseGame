@@ -95,7 +95,7 @@ public:
     void Input();
 };
 
-extern World main_world;
+extern World *main_world;
 
 class GameStatics final
 {
@@ -109,7 +109,7 @@ template < typename T > inline T *GameStatics::createActor(Vector2D pos)
     T *pActor = new T;
     if (pActor && static_cast< Actor * >(pActor))
     {
-        main_world.GameActors_to_add.push_back(pActor);
+        main_world->GameActors_to_add.push_back(pActor);
         pActor->setLocalPosition(pos);
         // play
         return pActor;

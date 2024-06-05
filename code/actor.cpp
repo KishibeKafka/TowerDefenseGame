@@ -2,7 +2,7 @@
 #include "Vector2D.h"
 #include "world.h"
 
-extern World main_world;
+extern World *main_world;
 
 Vector2D Actor::getWorldPosition() const
 {
@@ -19,5 +19,5 @@ Vector2D Actor::getWorldScale() const
 
 void Actor::Destroy()
 {
-    main_world.GameActors_to_delete.insert(this);
+    main_world->GameActors_to_delete.insert(this);
 }

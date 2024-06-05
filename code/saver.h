@@ -12,7 +12,7 @@
 #include "world.h"
 #include <cstdio>
 
-extern World main_world;
+extern World *main_world;
 
 class Saver
 {

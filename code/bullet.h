@@ -6,7 +6,7 @@
 #include <cmath>
 #include <iostream>
 
-extern World main_world;
+extern World *main_world;
 
 class Bullet : public Actor
 {
@@ -19,7 +19,8 @@ public:
     ~Bullet() {}
     void Update()
     {
-        if (main_world.GameActors.find(receiver) != main_world.GameActors.end())
+        if (main_world->GameActors.find(receiver) !=
+            main_world->GameActors.end())
         {
             Property *r_p = receiver->getComponentByClass< Property >();
             if (Vector2D::Distance(getWorldPosition(),

@@ -5,6 +5,8 @@
 #include "world.h"
 #include <string>
 
+extern World *main_world;
+
 class BuffManager : public Component
 {
 private:
@@ -58,7 +60,7 @@ public:
         if (property->getBuff() == Empty)
         {
             property->setBuff((BuffType)type);
-            main_world.number_of_buff[type]--;
+            main_world->number_of_buff[type]--;
             switch (type)
             {
             case 1:

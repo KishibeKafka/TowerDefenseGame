@@ -18,11 +18,11 @@ void Saver::save(std::string filename)
     document.SetObject();
 
     int size_x = 10, size_y = 10;
-    size_x = main_world.game_map->size_x;
-    size_y = main_world.game_map->size_y;
-    double current_time = main_world.timer.getCurrrentTime().count();
-    int enemy_number = main_world.enemy_number;
-    int current_cost = main_world.current_cost;
+    size_x = main_world->game_map->size_x;
+    size_y = main_world->game_map->size_y;
+    double current_time = main_world->timer.getCurrrentTime().count();
+    int enemy_number = main_world->enemy_number;
+    int current_cost = main_world->current_cost;
 
     rapidjson::Document::AllocatorType &allo = document.GetAllocator();
     rapidjson::Value size_j(rapidjson::kArrayType);
@@ -36,14 +36,14 @@ void Saver::save(std::string filename)
     rapidjson::Value buffs(rapidjson::kArrayType);
     for (int i = 1; i <= 4; ++i)
     {
-        buffs.PushBack(main_world.number_of_buff[i], allo);
+        buffs.PushBack(main_world->number_of_buff[i], allo);
     }
     document.AddMember("buff", buffs, allo);
 
     rapidjson::Value paths(rapidjson::kArrayType);
-    for (int i = 0; i < main_world.game_map->paths.size(); i++)
+    for (int i = 0; i < main_world->game_map->paths.size(); i++)
     {
-        Path &p = main_world.game_map->paths[i];
+        Path &p = main_world->game_map->paths[i];
         rapidjson::Value pairs(rapidjson::kArrayType);
         rapidjson::Value first(rapidjson::kArrayType);
         rapidjson::Value second(rapidjson::kArrayType);
@@ -58,9 +58,9 @@ void Saver::save(std::string filename)
     document.AddMember("path", paths, allo);
 
     rapidjson::Value highplaces(rapidjson::kArrayType);
-    for (int i = 0; i < main_world.game_map->highplaces.size(); i++)
+    for (int i = 0; i < main_world->game_map->highplaces.size(); i++)
     {
-        HighPlace &h = main_world.game_map->highplaces[i];
+        HighPlace &h = main_world->game_map->highplaces[i];
         rapidjson::Value pairs(rapidjson::kArrayType);
         rapidjson::Value first(rapidjson::kArrayType);
         rapidjson::Value second(rapidjson::kArrayType);
@@ -75,7 +75,7 @@ void Saver::save(std::string filename)
     document.AddMember("highplace", highplaces, allo);
 
     rapidjson::Value enemies(rapidjson::kArrayType);
-    for (auto &p_a : main_world.GameActors)
+    for (auto &p_a : main_world->GameActors)
     {
         if (p_a == nullptr || !p_a->alive)
             continue;
@@ -157,7 +157,7 @@ void Saver::save(std::string filename)
     document.AddMember("enemies", enemies, allo);
 
     rapidjson::Value towers(rapidjson::kArrayType);
-    for (auto &p_a : main_world.GameActors)
+    for (auto &p_a : main_world->GameActors)
     {
         if (p_a == nullptr || !p_a->alive)
             continue;

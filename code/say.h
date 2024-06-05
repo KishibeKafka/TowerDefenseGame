@@ -7,7 +7,7 @@
 #include <chrono>
 #include <iostream>
 
-extern World main_world;
+extern World *main_world;
 
 class Say : public Component
 {
@@ -18,7 +18,7 @@ public:
         if (pOwner)
         {
             std::cout << "time at :"
-                      << main_world.timer.getCurrrentTime().count() << '\n';
+                      << main_world->timer.getCurrrentTime().count() << '\n';
             std::cout << pOwner->getComponentByClass< Property >()->getName()
                       << " at " << pOwner->getWorldPosition() << '\n';
             std::cout

@@ -25,4 +25,4 @@ public:
     static void End();
 };
 
-extern World main_world;
+extern World *main_world;

@@ -9,7 +9,7 @@
 #include <queue>
 #include <utility>
 
-extern World main_world;
+extern World *main_world;
 
 struct EnemyUnit
 {
@@ -34,12 +34,12 @@ public:
     static void update()
     {
         if (!enemies_to_generate.empty() &&
-            main_world.timer.getCurrrentTime().count() >=
+            main_world->timer.getCurrrentTime().count() >=
                 enemies_to_generate.front().time_point)
         {
             EnemyUnit unit = enemies_to_generate.front();
             Enemy *e = GameStatics::createActor< Enemy >(
-                main_world.game_map->grids[unit.i][unit.j].getlocation());
+                main_world->game_map->grids[unit.i][unit.j].getlocation());
             e->init(unit.enemy_id);
             Property *e_p = e->getComponentByClass< Property >();
 
@@ -57,7 +57,7 @@ public:
 
             while (!unit.route_point.empty())
             {
-                e_p->addRoutePoint(main_world.game_map
+                e_p->addRoutePoint(main_world->game_map
                                        ->grids[unit.route_point.front().x]
                                               [unit.route_point.front().y]
                                        .getlocation());
