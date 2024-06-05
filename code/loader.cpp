@@ -1,5 +1,8 @@
 #include "loader.h"
 #include "property.h"
+#include "rapidjson/document.h"
+#include "rapidjson/rapidjson.h"
+#include "world.h"
 
 void Loader::getEnemy(int id, Property *e_p)
 {
@@ -93,6 +96,13 @@ void Loader::loadSave(std::string filename)
         new GameMap(document["size"][0].GetInt(), document["size"][1].GetInt());
     main_world.enemy_number = document["enemy_number"].GetInt();
     main_world.current_cost = document["current_cost"].GetInt();
+
+    const rapidjson::Value &buffs = document["buff"];
+    for (rapidjson::SizeType i = 0; i < buffs.Size(); i++)
+    {
+        main_world.number_of_buff[i + 1] = buffs[i].GetInt();
+    }
+
     const rapidjson::Value &paths = document["path"];
     for (rapidjson::SizeType i = 0; i < paths.Size(); i++)
     {

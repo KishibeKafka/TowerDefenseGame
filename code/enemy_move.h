@@ -1,7 +1,9 @@
 #pragma once
 #include "Vector2D.h"
 #include "component.h"
+#include "engine.h"
 #include "property.h"
+#include "world.h"
 #include <iostream>
 class EnemyMove : public Component
 {
@@ -68,7 +70,8 @@ public:
                 std::cout << "Enemy Entered your HOME!\n";
                 property->setCurrentVelocity(0);
                 pOwner->Destroy();
-                // 结束？
+                // 结束
+                Engine::end = true;
             }
             if (reached)
             {

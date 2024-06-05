@@ -28,7 +28,7 @@ void update()
     {
         if (main_world.enemy_number <= 0)
         {
-            Engine::End();
+            Engine::end = true;
         }
         main_world.Update();
     }

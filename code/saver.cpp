@@ -1,5 +1,8 @@
 #include "saver.h"
 #include "Vector2D.h"
+#include "rapidjson/document.h"
+#include "rapidjson/rapidjson.h"
+#include "world.h"
 #include <queue>
 
 void Saver::save(std::string filename)
@@ -29,6 +32,13 @@ void Saver::save(std::string filename)
     document.AddMember("current_time", 0, allo);
     document.AddMember("enemy_number", enemy_number, allo);
     document.AddMember("current_cost", current_cost, allo);
+
+    rapidjson::Value buffs(rapidjson::kArrayType);
+    for (int i = 1; i <= 4; ++i)
+    {
+        buffs.PushBack(main_world.number_of_buff[i], allo);
+    }
+    document.AddMember("buff", buffs, allo);
 
     rapidjson::Value paths(rapidjson::kArrayType);
     for (int i = 0; i < main_world.game_map->paths.size(); i++)
