@@ -24,7 +24,7 @@ void Loader::getEnemy(int id, Property *e_p)
             e_p->setCurHP(e_p->getMaxHP());
             e_p->setCurDMG(e_p->getMaxDMG());
             e_p->setAttackInterval(e["attack_interval"].GetDouble());
-            e_p->setVelocity(e["velocity"].GetDouble() * PPU);
+            e_p->setVelocity(e["velocity"].GetDouble());
             e_p->setCurrentVelocity(e_p->getVelocity());
             e_p->setRadius(e["radius"].GetDouble() * PPU);
             const rapidjson::Value &range = e["attack_range"];
@@ -111,7 +111,6 @@ void Loader::loadSave(std::string filename)
         int y2 = high[i][1][1].GetInt();
         main_world.game_map->addHighPlace(x1, y1, x2, y2);
     }
-
     const rapidjson::Value &enemies = document["enemies"];
     if (enemies.IsArray())
     {
@@ -121,7 +120,8 @@ void Loader::loadSave(std::string filename)
             const rapidjson::Value &r = enemies[i]["route"];
             for (rapidjson::SizeType i = 0; i < r.Size(); i++)
             {
-                route_points.push(Vector2D(r[i][0].GetInt(), r[i][1].GetInt()));
+                route_points.push(
+                    Vector2D(r[i][0].GetDouble(), r[i][1].GetDouble()));
             }
             EnemyUnit unit = {enemies[i]["id"].GetInt(),
                               enemies[i]["spawn_time"].GetDouble(),

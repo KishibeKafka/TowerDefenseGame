@@ -45,8 +45,12 @@ public:
 
             e_p->setCurHP(unit.curHP);
             e_p->setCurDMG(unit.curDMG);
-            e_p->setCurrentVelocity(unit.curVelocity * PPU);
-            if (unit.time_point > 0)
+            e_p->setCurrentVelocity(unit.curVelocity);
+            if (unit.buff != Empty)
+            {
+                e_p->setBuff(unit.buff);
+            }
+            if (unit.time_point > 0 && unit.buff == Empty)
             {
                 e->getComponentByClass< BuffManager >()->addBuff();
             }

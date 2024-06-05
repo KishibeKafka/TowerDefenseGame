@@ -34,10 +34,12 @@ public:
             TowerUnit unit = existing_towers.front();
             Tower *t = GameStatics::createActor< Tower >(
                 main_world.game_map->grids[unit.i][unit.j].getlocation());
+            t->init(unit.tower_id);
             Property *t_p = t->getComponentByClass< Property >();
             t_p->setCurHP(unit.curHP);
             t_p->setCurDMG(unit.curDMG);
             t_p->setDirection(unit.direction);
+            t_p->setBuff(unit.buff);
             existing_towers.pop();
         }
     }

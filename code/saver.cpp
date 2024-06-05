@@ -1,4 +1,6 @@
 #include "saver.h"
+#include "Vector2D.h"
+#include <queue>
 
 void Saver::save(std::string filename)
 {
@@ -70,6 +72,14 @@ void Saver::save(std::string filename)
         Property *e_p = p_a->getComponentByClass< Property >();
         if (e_p->getType() == 1)
         {
+            std::queue< Vector2D > temp = e_p->getRoute();
+            std::queue< Vector2D > enemy_route;
+            while (!temp.empty())
+            {
+                enemy_route.push(Vector2D((int)(temp.front().x / PPU + 0.5),
+                                          (int)(temp.front().y / PPU + 0.5)));
+                temp.pop();
+            }
             EnemyUnit unit = {e_p->getID(),
                               0,
                               e_p->getCurHP(),
@@ -77,7 +87,7 @@ void Saver::save(std::string filename)
                               e_p->getCurrentVelocity(),
                               (int)(p_a->getWorldPosition().x / PPU + 0.5),
                               (int)(p_a->getWorldPosition().y / PPU + 0.5),
-                              e_p->getRoute(),
+                              enemy_route,
                               e_p->getBuff()};
             rapidjson::Value enemy(rapidjson::kObjectType);
             enemy.AddMember("id", unit.enemy_id, allo);
@@ -88,13 +98,13 @@ void Saver::save(std::string filename)
             enemy.AddMember("spawn_position", spawn_position, allo);
             enemy.AddMember("curHP", unit.curHP, allo);
             enemy.AddMember("curDMG", unit.curDMG, allo);
-            enemy.AddMember("curVelocity", unit.curVelocity / PPU, allo);
+            enemy.AddMember("curVelocity", unit.curVelocity, allo);
             rapidjson::Value route(rapidjson::kArrayType);
             while (!unit.route_point.empty())
             {
                 rapidjson::Value point(rapidjson::kArrayType);
-                point.PushBack(unit.route_point.front().x, allo);
-                point.PushBack(unit.route_point.front().y, allo);
+                point.PushBack((int)unit.route_point.front().x, allo);
+                point.PushBack((int)unit.route_point.front().y, allo);
                 route.PushBack(point, allo);
                 unit.route_point.pop();
             }
@@ -117,13 +127,15 @@ void Saver::save(std::string filename)
         enemy.AddMember("spawn_position", spawn_position, allo);
         enemy.AddMember("curHP", unit.curHP, allo);
         enemy.AddMember("curDMG", unit.curDMG, allo);
-        enemy.AddMember("curVelocity", unit.curVelocity / PPU, allo);
+        enemy.AddMember("curVelocity", unit.curVelocity, allo);
         rapidjson::Value route(rapidjson::kArrayType);
         while (!unit.route_point.empty())
         {
             rapidjson::Value point(rapidjson::kArrayType);
-            point.PushBack(unit.route_point.front().x, allo);
-            point.PushBack(unit.route_point.front().y, allo);
+            point.PushBack(static_cast< int >(unit.route_point.front().x),
+                           allo);
+            point.PushBack(static_cast< int >(unit.route_point.front().y),
+                           allo);
             route.PushBack(point, allo);
             unit.route_point.pop();
         }
@@ -145,8 +157,8 @@ void Saver::save(std::string filename)
             TowerUnit unit = {t_p->getID(),
                               t_p->getCurHP(),
                               t_p->getCurDMG(),
-                              (int)(p_a->getWorldPosition().x * PPU + 0.5),
-                              (int)(p_a->getWorldPosition().y * PPU + 0.5),
+                              (int)(p_a->getWorldPosition().x / PPU + 0.5),
+                              (int)(p_a->getWorldPosition().y / PPU + 0.5),
                               t_p->getDirection(),
                               t_p->getBuff()};
             rapidjson::Value tower(rapidjson::kObjectType);
@@ -158,7 +170,7 @@ void Saver::save(std::string filename)
             tower.AddMember("direction", unit.direction, allo);
             tower.AddMember("curHP", unit.curHP, allo);
             tower.AddMember("curDMG", unit.curDMG, allo);
-            towers.AddMember("buff", (int)unit.buff, allo);
+            tower.AddMember("buff", unit.buff, allo);
             towers.PushBack(tower, allo);
         }
     }

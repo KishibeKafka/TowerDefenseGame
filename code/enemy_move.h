@@ -80,13 +80,13 @@ public:
             }
             Vector2D delta;
             if (property->getDirection() == East)
-                delta = Vector2D(property->getCurrentVelocity(), 0);
+                delta = Vector2D(property->getCurrentVelocity() * PPU, 0);
             else if (property->getDirection() == North)
-                delta = Vector2D(0, property->getCurrentVelocity());
+                delta = Vector2D(0, property->getCurrentVelocity() * PPU);
             else if (property->getDirection() == West)
-                delta = Vector2D(-property->getCurrentVelocity(), 0);
+                delta = Vector2D(-property->getCurrentVelocity() * PPU, 0);
             else
-                delta = Vector2D(0, -property->getCurrentVelocity());
+                delta = Vector2D(0, -property->getCurrentVelocity() * PPU);
             pOwner->addPosition(delta);
 
             if (Vector2D::Distance(pOwner->getWorldPosition(),
